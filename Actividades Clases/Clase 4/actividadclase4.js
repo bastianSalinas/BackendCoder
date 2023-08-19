@@ -9,5 +9,13 @@ fs.writeFileSync('./ejemplo.txt',"Hola Coders, estoy en un archivo!")
 if(fs.existsSync('./ejemplo.txt')){
     let contenido = fs.readFileSync('./ejemplo.txt','utf-8')
 
-    console.log(contenido)
+    console.log(contenido) //El resultado es Hola Coders, estoy en un archivo!
+    fs.appendFileSync('./ejemplo.txt', ' Más contenido')
+
+    //volvemos a leer el contenido del archivo
+    contenido = fs.readFileSync('./ejemplo.txt','utf-8')
+    console.log(contenido) //Esta vez el contenido será Hola Coders, estoy en un archivo! Más contenido
+
+    fs.unlinkSync('./ejemplo.txt')
+    //Por último, esta linea de codigo eliminará el archivo, independientemente del contenido que tenga
 }
