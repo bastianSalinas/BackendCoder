@@ -73,14 +73,14 @@ const products = new ProductManager
 //products.deleteProductsById(2)
 //products.deleteProductsById(4)
 
-products.updateProducts(
-    {
-        title: 'Titulo Producto 1',
-        description: 'Desc Producto 1',
-        price: 3500,
-        thumbnail: 'Img Producto 1',
-        code: 'prod1barcode',
-        stock: 120,
-        id: 1,
-    }
-)
+// products.updateProducts(
+//     {
+//         title: 'Titulo Producto 1',
+//         description: 'Desc Producto 1',
+//         price: 3500,
+//         thumbnail: 'Img Producto 1',
+//         code: 'prod1barcode',
+//         stock: 120,
+//         id: 1,
+//     }
+// )
