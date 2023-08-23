@@ -21,29 +21,29 @@ class ProductManager {
     }
 
     readProducts = async () => {
-        let responserp = await fs.readFile(this.patch, "utf-8")
-        return JSON.parse(responserp)
+        let responseRP = await fs.readFile(this.patch, "utf-8")
+        return JSON.parse(responseRP)
     }
 
     getProducts = async () => {
-        let responsegp = await this.readProducts()
-        return await console.log(responsegp)
+        let responseGP = await this.readProducts()
+        return await console.log(responseGP)
     }
 
     getProductsById = async (id) =>{
-        let responseprodall = await this.readProducts()
-        let responseprodid = responseprodall.find(product => product.id === id)
-        if(!responseprodid){
+        let responseProdAll = await this.readProducts()
+        let responseProdId = responseProdAll.find(product => product.id === id)
+        if(!responseProdId){
             console.log("Producto no encontrado")
         }else{
-            console.log(responseprodid)
+            console.log(responseProdId)
         }   
     }
 
     deleteProductsById = async (id) => {
-        let responseprodall = await this.readProducts()
-        let productFilter = responseprodall.filter(products => products.id != id)
-        if (productFilter.length === responseprodall.length) {
+        let responseProdAll = await this.readProducts()
+        let productFilter = responseProdAll.filter(products => products.id != id)
+        if (productFilter.length === responseProdAll.length) {
             console.log("No se encontró ningún producto con el ID " + id);
         } else {
             await fs.writeFile(this.patch, JSON.stringify(productFilter))
@@ -51,10 +51,10 @@ class ProductManager {
         }
     }
 
-    updateProducts = async ({ id, ...productup }) => {
+    updateProducts = async ({ id, ...productUp }) => {
         await this.deleteProductsById(id)
-        let responseprodall = await this.readProducts()
-        let prodUpdate = [{ ...productup, id}, ...responseprodall]
+        let responseProdAll = await this.readProducts()
+        let prodUpdate = [{ ...productUp, id}, ...responseProdAll]
         await fs.writeFile(this.patch, JSON.stringify(prodUpdate))
     }
 }
