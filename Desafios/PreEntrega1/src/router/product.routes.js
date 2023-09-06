@@ -10,7 +10,7 @@ prodRouter.put("/:id", async (req,res) => {
     let updProd = req.body
     res.send(await product.updProducts(id, updProd))
 })
-//Traemos los productos por el id http://localhost:8080/api/products//idproducto con get
+//Traemos los productos por el id http://localhost:8080/api/products/idproducto con get
 prodRouter.get("/:id", async (req, res) => {
     let id = req.params.id
     res.send(await product.getProdById(id))

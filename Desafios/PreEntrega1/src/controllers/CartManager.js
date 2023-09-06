@@ -2,6 +2,7 @@ import {promises as fs} from 'fs'
 import {nanoid} from "nanoid"
 import ProductManager from './ProductManager.js'
 
+//Se accede a funciones de ProductManager definiendo prodAll
 const prodAll = new ProductManager()
 
 class CartManager {
@@ -47,7 +48,7 @@ class CartManager {
         if(!carttId) return "Cart Not Found"
         let proddId = await prodAll._exist(prodId)
         if(!proddId) return "Prod Not Found"
-        //------------------------------------------------------//
+        //-----------------------------------------------------------------------//
         let cartsAll = await this.getCarts()
         let cartFilter = cartsAll.filter((cart) => cart.id != cartId)
         if(carttId.products.some((prod) => prod.id === prodId)){
@@ -57,6 +58,7 @@ class CartManager {
             await this._writeCarts(cartsConcat)
             return "Product Added in Cart"
         }
+        //-----------------------------------------------------------------------//
         carttId.products.push({id:prodId, quantity: 1})
         let cartsConcat = [ carttId, ...cartFilter]
         await this._writeCarts(cartsConcat)

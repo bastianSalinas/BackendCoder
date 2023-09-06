@@ -19,7 +19,7 @@ class ProductManager {
     _writeProducts = async (product) => {
         await fs.writeFile(this.path, JSON.stringify(product))
     }
-    //Se agregan los productos junto al id con nanoid
+    //Se agregan los productos junto al id con nanoid()
     addProducts = async (product) => {
         let productsAct = await this._readProducts()
         product.id = nanoid()
