@@ -27,6 +27,7 @@ class ProductManager {
         await this._writeProducts(productAll)
         return "Product Added"
     }
+    //Se actualizan los productos mandando el id del producto a actualizar y los nuevos datos a guardar
     updProducts = async (id, product) => {
         //Se valida producto si existe
         let prodId = await this._exist(id)
@@ -40,14 +41,17 @@ class ProductManager {
         await this._writeProducts(products)
         return "Product Updated"
     }
+    //Se obtienen los productos desde _readProducts
     getProducts = async () => {
         return await this._readProducts()
     }
+    //Se obtienen los productos segun id, entregando el id por parametros
     getProdById = async (id) => {
         let prodId = await this._exist(id)
         if(!prodId) return "Product Not Found"
         return prodId
     }
+    //Se elimina producto de id que enviamos por parametro
     delProducts = async (id) => {
         let products = await this._readProducts()
         //Se valida si existe producto con some para validar con un true o false y tomar acciones dependiendo del caso
