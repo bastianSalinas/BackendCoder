@@ -1,20 +1,21 @@
 {
-  "name": "desafio-5",
+  "name": "preentrega1",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/main.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "nodemon": "^3.0.1"
-  },
   "dependencies": {
     "express": "^4.18.2",
-    "express-handlebars": "^7.1.2"
+    "express-handlebars": "^7.1.2",
+    "nanoid": "^4.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }
