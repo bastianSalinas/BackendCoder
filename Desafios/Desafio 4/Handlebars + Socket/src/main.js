@@ -28,6 +28,7 @@ const httpServer = app.listen(PORT, () => {
 
 const socketServer = new Server(httpServer)
 
+
 socketServer.on("connection", socket => {
     console.log("Nuevo Cliente Conectado")
 //------Recibir información del cliente----------//
@@ -35,6 +36,11 @@ socketServer.on("connection", socket => {
         console.log(data)
     })
 //-----------------------------------------------//
+
+    socket.on("newProd", (newProduct) => {
+        product.addProducts(newProduct)
+        socketServer.emit("success", "Producto Agregado Correctamente");
+    });
 //-----------------------------Enviar información al cliente----------------------------------//
     socket.emit("test","mensaje desde servidor a cliente, se valida en consola de navegador")
 //--------------------------------------------------------------------------------------------//

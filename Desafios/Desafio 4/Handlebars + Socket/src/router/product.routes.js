@@ -33,7 +33,7 @@ prodRouter.post("/", async (req, res) => {
 //Se envia por socket.io
 prodRouter.get("/", async (req, res) => {
     let totalProd = await product.getProducts()
-    res.render("realTimeProducts", { totalProd })
+    res.render("realTimeProducts", { title: "Socket",totalProd })
 })
 
 
