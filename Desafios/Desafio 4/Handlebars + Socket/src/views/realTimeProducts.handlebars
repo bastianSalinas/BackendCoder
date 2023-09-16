@@ -1,0 +1,12 @@
+{{!-- Lista de productos con websocket --}}
+<div>
+    <h1>Lista de Productos con Socket</h1>
+{{#each totalProd}}
+    <h2>{{this.title}}</h2>
+    <p>{{this.thumbnails}}</p>
+    <p>{{this.description}}</p>
+    <p>{{this.price}}</p>
+{{/each}}
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/realTimeProducts.js"></script>

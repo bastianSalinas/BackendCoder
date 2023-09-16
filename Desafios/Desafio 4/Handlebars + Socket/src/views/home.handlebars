@@ -1,0 +1,8 @@
+{{!-- Lista de productos con Handlebars --}}
+<h1>Lista de Productos con Handlebars</h1>
+{{#each products}}
+    <h2>{{this.title}}</h2>
+    <p>{{this.thumbnails}}</p>
+    <p>{{this.description}}</p>
+    <p>{{this.price}}</p>
+{{/each}}
