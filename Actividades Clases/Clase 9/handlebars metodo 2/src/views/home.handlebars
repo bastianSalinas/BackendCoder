@@ -1,0 +1,10 @@
+<h1>Hola Mundo</h1>
+{{#if admin}}
+        {{#each products}}
+            <h2>{{this.nombre}}</h2>
+            <p>{{this.apellido}}</p>
+        {{/each}}
+    {{else}}
+        {{> saludo}}
+        <p>No eres el administrador</p>
+{{/if}}
