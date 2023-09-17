@@ -38,7 +38,7 @@
                         <td>{{this.status}}</td>
                         <td>{{this.stock}}</td>
                         <td>{{this.category}}</td>
-                        <td>{{this.thumbnails}}</td>
+                        <td><img src="{{this.thumbnails}}" alt="Imagen Producto"></td>
                     </tr>
                 {{/each}}
             </tbody>
@@ -50,16 +50,16 @@
         <form id="prod-form">
             <div class="inputs">
                 <div> 
-                <input type="text" id="title" autocomplete="off" placeholder="Ingerse Titulo" required>
-                <input type="text" id="desc" autocomplete="off" placeholder="Ingerse Descripcion" required>
-                <input type="text" id="cod" autocomplete="off" placeholder="Ingerse Codigo" required>
-                <input type="text" id="price" autocomplete="off" placeholder="Ingerse Precio" required>
+                <input type="text" id="title" autocomplete="off" placeholder="Ingrese Titulo" required>
+                <input type="text" id="desc" autocomplete="off" placeholder="Ingrese Descripcion" required>
+                <input type="text" id="cod" autocomplete="off" placeholder="Ingrese Codigo" required>
+                <input type="text" id="price" autocomplete="off" placeholder="Ingrese Precio" required>
             </div>
             <div>
-                <input type="text" id="status" autocomplete="off" placeholder="Ingerse Status" required>
-                <input type="text" id="stock" autocomplete="off" placeholder="Ingerse Stock" required>
-                <input type="text" id="cat" autocomplete="off" placeholder="Ingerse Categoria" required>
-                <input type="text" id="img" autocomplete="off" placeholder="Ingerse Imagen" required>
+                <input type="text" id="status" autocomplete="off" placeholder="Ingrese Status" required>
+                <input type="text" id="stock" autocomplete="off" placeholder="Ingrese Stock" required>
+                <input type="text" id="cat" autocomplete="off" placeholder="Ingrese Categoria" required>
+                <input type="text" id="img" autocomplete="off" placeholder="Ingrese Imagen" required>
             </div>
             </div>
             <div class="botones">
