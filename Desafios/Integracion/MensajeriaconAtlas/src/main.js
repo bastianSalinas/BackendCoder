@@ -38,12 +38,12 @@ app.use("/api/carts", cartsRouter)
 app.use("/api/msg", messagesRouter)
 app.use("/api/prod", productsRouter)
 //---------------------------------------------------------------------------//
-//----------Prueba de multer------------//
-app.use("/api/upload", uploadRouter)
+//----------Prueba de multer con localhost:8080/upload------------//
+app.use("/", uploadRouter) //Se manda la imagen desde el form-data de postman y se almacena en public/files
 //---------------------------------------------------------------------------//
 //--------------------------------------------------------------------------------------------------------//
 //----------------Handlebars----------------------//
-//------------------------Handlebars----------------------------------//
+//------------------------Configuracion----------------------------------//
 app.engine("handlebars", engine())
 app.set("view engine", "handlebars")
 app.set("views", path.resolve(__dirname + "/views"))
@@ -52,7 +52,7 @@ app.use("/", express.static(__dirname + "/public"))
 
 //-------------------------------------------------------------------------//
 //--------------------------------Handelbars View-------------------------//
-app.get("/", async (req, res) => {
+app.get("/chat", async (req, res) => {
     res.render("chat", {
         title: "Chat con Mongoose",
     })
