@@ -57,6 +57,12 @@ app.get("/chat", async (req, res) => {
         title: "Chat con Mongoose",
     })
 })
+
+app.get("/multer", async (req, res) => {
+    res.render("upload", {
+        title: "Multer",
+    })
+})
 //------------------------------------------------------------------//
 
 
