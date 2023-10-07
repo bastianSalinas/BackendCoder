@@ -18,17 +18,17 @@ const product = new ProductManager()
 //-----------------------------------------------------------------------------//
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-//---------------------------------------------------------------------//
-//-------------Validación de conexión mostrando el puerto-----------------//
+//------------------------------------------------------------------------------------//
+//--------------------Validación de conexión mostrando el puerto---------------------//
 const httpServer = app.listen(PORT, () => {
     console.log(`Servidor Express Puerto ${PORT}`)
 })
-//-------------------------------------------------------------------------//
-//-------------------------Socket.io-----------------------------------//
+//-----------------------------------------------------------------------------------//
+//---------------------------------------Socket.io-----------------------------------//
 
 const socketServer = new Server(httpServer)
 
-
+//-------------------------------Prueba conexión-------------------------------------------//
 socketServer.on("connection", socket => {
     console.log("Nuevo Cliente Conectado")
 //------Recibir información del cliente----------//
@@ -45,9 +45,7 @@ socketServer.on("connection", socket => {
     socket.emit("test","mensaje desde servidor a cliente, se valida en consola de navegador")
 //--------------------------------------------------------------------------------------------//
 })
-
-
-//------------------------------------------------------------------------//
+//--------------------------------------------------------------------------------------------//
 
 //------------------------Handlebars----------------------------------//
 app.engine("handlebars", engine())
@@ -57,10 +55,10 @@ app.set("views", path.resolve(__dirname + "/views"))
 //CSS Static
 app.use("/", express.static(__dirname + "/public"))
 
-//Socket View
+//---------------------------------Socket View-----------------------------//
 app.use("/realtimeproducts", prodRouter)
-
-//Handelbars View
+//-------------------------------------------------------------------------//
+//--------------------------------Handelbars View-------------------------//
 app.get("/", async (req, res) => {
     let allProducts  = await product.getProducts()
     res.render("home", {
@@ -73,6 +71,7 @@ app.get("/", async (req, res) => {
 //Se simplifica codigo de middleware colocando lo siguiente
 // app.use("/api/products", prodRouter)
 // app.use("/api/carts", cartRouter)
+
 //-------------------------------------------------------------------------//
 
 
