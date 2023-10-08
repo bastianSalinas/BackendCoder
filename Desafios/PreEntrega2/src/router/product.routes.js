@@ -13,12 +13,75 @@ prodRouter.put("/:id", async (req,res) => {
 //Traemos los productos por el id http://localhost:8080/api/products/idproducto con get
 prodRouter.get("/:id", async (req, res) => {
     let id = req.params.id
-    res.send(await product.getProdById(id))
+    res.send(await product.getProductById(id))
 })
-//Traemos todos los productos http://localhost:8080/api/products/ con get
+//--------------------------------4 Get Opcionales-----------------------------------------------------------------------------//
+//Traemos los productos con limit con http://localhost:8080/api/products/limit/numeroLimit con get
+prodRouter.get("/limit/:limit", async (req, res) => { 
+    let limit = parseInt(req.params.limit)
+    if (isNaN(limit) || limit <= 0) {
+        limit = 10; // Establece el valor predeterminado en 10 si no se proporciona un límite válido
+    }    
+    res.send(await product.getProductsByLimit(limit))
+})
+//Traemos los productos por page con http://localhost:8080/api/products/page/numeroPage con get
+prodRouter.get("/page/:page", async (req, res) => { 
+    let page = parseInt(req.params.page)
+    if (isNaN(page) || page <= 0) {
+        page = 1; // Establece el valor predeterminado en 10 si no se proporciona un límite válido
+    }
+    const productsPerPage = 1; // Número de productos por página    
+    res.send(await product.getProductsByPage(page, productsPerPage))
+})
+//Traemos los productos por query con http://localhost:8080/api/products/buscar/query?q=nombreProducto con get
+prodRouter.get("/buscar/query", async (req, res) => { 
+    const query = req.query.q  
+    res.send(await product.getProductsByQuery(query))
+})
+//Traemos los productos por sort con http://localhost:8080/api/products/ordenar/sort?sort=desc y
+//http://localhost:8080/api/products/ordenar/sort/sort?sort=asc  con get
+prodRouter.get("/ordenar/sort", async (req, res) => { 
+        let sortOrder = 0;
+        if (req.query.sort) {
+        // Si se proporcionó, verifica el valor y configura el orden correspondiente
+        if (req.query.sort === "desc") {
+          sortOrder = -1; // Orden descendente
+        }else if(req.query.sort === "asc"){
+            sortOrder = 1; 
+        }
+      }
+    res.send(await product.getProductsBySort(sortOrder))
+})
+
+//--------------------------------Fin 4 Get Opcionales-----------------------------------------------------------------------------//
+//-------------------------------------------------Busqueda Maestra--------------------------------------------------------------//
+
+
+
+//--------------------------------------------------------------------------------------------------------------------------//
+
 prodRouter.get("/", async (req, res) => {
-    res.send(await product.getProducts())
+    let sortOrder = req.query.sortOrder; 
+    let category = req.query.category; 
+    let availability = req.query.availability; 
+    if(sortOrder === undefined){
+        sortOrder = "asc"
+    }
+    if(category === undefined){
+        category = ""
+    }
+    if(availability === undefined){
+        availability = ""
+    }
+    res.send(await product.getProductsMaster(null,null,category,availability, sortOrder))
 })
+
+
+
+//Traemos todos los productos http://localhost:8080/api/products/ con get
+// prodRouter.get("/", async (req, res) => {
+//     res.send(await product.getProducts())
+// })
 //Eliminamos los productos por id http://localhost:8080/api/products/idproducto con delete
 prodRouter.delete("/:id", async (req, res) => {
     let id = req.params.id
