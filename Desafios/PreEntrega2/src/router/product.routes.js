@@ -57,9 +57,6 @@ prodRouter.get("/ordenar/sort", async (req, res) => {
 //-------------------------------------------------Busqueda Maestra--------------------------------------------------------------//
 
 
-
-//--------------------------------------------------------------------------------------------------------------------------//
-
 prodRouter.get("/", async (req, res) => {
     let sortOrder = req.query.sortOrder; 
     let category = req.query.category; 
@@ -76,6 +73,7 @@ prodRouter.get("/", async (req, res) => {
     res.send(await product.getProductsMaster(null,null,category,availability, sortOrder))
 })
 
+//--------------------------------------------------------------------------------------------------------------------------//
 
 
 //Traemos todos los productos http://localhost:8080/api/products/ con get
