@@ -54,7 +54,7 @@ class ProductManager extends productsModel
       async getProductById(id) 
       {
         try {
-          const product = await ProductManager.findById(id);
+          const product = await ProductManager.findById(id).lean();
     
           if (!product) {
             return 'Producto no encontrado';

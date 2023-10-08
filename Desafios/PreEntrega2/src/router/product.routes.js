@@ -1,4 +1,5 @@
 import { Router } from "express"
+import mongoose from "mongoose"
 import ProductManager from "../controllers/ProductManager.js"
 
 const prodRouter = Router()
@@ -12,9 +13,15 @@ prodRouter.put("/:id", async (req,res) => {
 })
 //Traemos los productos por el id http://localhost:8080/api/products/idproducto con get
 prodRouter.get("/:id", async (req, res) => {
-    let id = req.params.id
-    res.send(await product.getProductById(id))
-})
+    try{
+        const prodId = req.params.id;
+        const productDetails = await product.getProductById(prodId);
+        res.render("viewDetails", { product: productDetails });
+    } catch (error) {
+        console.error('Error al obtener el producto:', error);
+        res.status(500).json({ error: 'Error al obtener el producto' });
+    } 
+});
 //--------------------------------4 Get Opcionales-----------------------------------------------------------------------------//
 //Traemos los productos con limit con http://localhost:8080/api/products/limit/numeroLimit con get
 prodRouter.get("/limit/:limit", async (req, res) => { 
