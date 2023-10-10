@@ -9,8 +9,10 @@ class ProductManager extends productsModel
     }
     
       // Agrega un nuevo producto
-      async addProduct(productData) {
-          try {
+      async addProduct(productData) 
+      {
+          try 
+          {
             await productsModel.create(productData);
             return 'Producto agregado';
           } catch (error) {
@@ -20,14 +22,14 @@ class ProductManager extends productsModel
         }
     
       // Actualiza un producto existente
-      async updateProduct(id, productData) {
-        try {
-          const product = await ProductManager.findById(id);
-    
+      async updateProduct(id, productData) 
+      {
+        try 
+        {
+          const product = await ProductManager.findById(id);   
           if (!product) {
             return 'Producto no encontrado';
-          }
-    
+          } 
           // Actualiza los campos del producto
           product.set(productData);
     
@@ -40,8 +42,10 @@ class ProductManager extends productsModel
       }
     
       // Obtiene todos los productos
-      async getProducts() {
-        try {
+      async getProducts() 
+      {
+        try 
+        {
           const products = await ProductManager.find({});
           return products;
         } catch (error) {
@@ -53,13 +57,15 @@ class ProductManager extends productsModel
       // Obtiene un producto por ID
       async getProductById(id) 
       {
-        try {
-          const product = await ProductManager.findById(id).lean();
-    
-          if (!product) {
+        try 
+        {
+          //La propiedad lean() arregla el error own properties que se muestra al momento de querer mostrar datos desde mongoose, ya que,
+          //viene con propiedades propias de mongoose y lean() se las quita para quedar solo el json
+          const product = await ProductManager.findById(id).lean();    
+          if (!product) 
+          {
             return 'Producto no encontrado';
-          }
-    
+          }   
           return product;
         } catch (error) {
           console.error('Error al obtener el producto:', error);
@@ -70,14 +76,13 @@ class ProductManager extends productsModel
       // Obtiene un producto por Limit
       async getProductsByLimit(limit) 
       {
-        try {
-          console.log(limit)
+        try 
+        {
           const products = await ProductManager.find().limit(limit); // Aplica el límite a la consulta
           if (products.length < limit) {
             // Si es menor, ajusta el límite para que coincida con el número de productos disponibles
             limit = products.length;
-          }
-      
+          }     
           return products;
         } catch (error) {
           throw error;
@@ -93,7 +98,6 @@ class ProductManager extends productsModel
           const products = await ProductManager.find()
             .skip((page - 1) * productsPerPage) // Omite los productos de las páginas anteriores
             .limit(productsPerPage); // Limita la consulta a la cantidad de productos por página
-      
           return products;
         } catch (error) {
           throw error;
@@ -102,12 +106,11 @@ class ProductManager extends productsModel
       // Obtiene un producto por Query
       async getProductsByQuery(query) 
       {
-        console.log(query)
-        try {
+        try 
+        {
           const products = await productsModel.find({
             description: { $regex: query, $options: 'i' }
           });
-          console.log(products)
           return products;
         } catch (error) {
           throw error;
@@ -117,7 +120,8 @@ class ProductManager extends productsModel
       // Obtiene un producto por Sort
       async getProductsBySort(sortOrder) 
       {
-        try {
+        try 
+        {
           const products = await productsModel
           .find({})
           .sort({ price: sortOrder }); // Ordena por precio según el sortOrder
@@ -128,8 +132,6 @@ class ProductManager extends productsModel
         }
       }
 
-
-
       //Busqueda con todo lo solicitado 
       async getProductsMaster(page = 1, limit = 10, category, availability, sortOrder) 
       {
@@ -137,7 +139,6 @@ class ProductManager extends productsModel
         {
           // Construye un objeto de filtro basado en los parámetros de consulta
           let filter = {};
-
           // Calcula el índice de inicio y fin para la paginación
           const startIndex = (page - 1) * limit;
           const endIndex = page * limit;
@@ -195,10 +196,11 @@ class ProductManager extends productsModel
       }
       
       // Elimina un producto por ID
-      async deleteProduct(id) {
-        try {
-          const product = await ProductManager.findById(id);
-    
+      async deleteProduct(id) 
+      {
+        try 
+        {
+          const product = await ProductManager.findById(id);  
           if (!product) {
             return 'Producto no encontrado';
           }
@@ -211,5 +213,4 @@ class ProductManager extends productsModel
         }
       }
 }
-  
-  export default ProductManager;
+export default ProductManager;
