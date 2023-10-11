@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyCookies</title>
+</head>
+<body>
+    <h1>Cookie Example</h1>
+
+    <form action="/setCookie" method="post">
+        <label for="userName">Nombre del Usuario:</label>
+        <input type="text" name="user" id="userName" required>
+        <br>
+        <label for="userEmail"></label>
+        <input type="text" id="userEmail" name="email" required>
+        <button type="submit">Crear Cookie</button>
+    </form>
+    <button id="getCookie">Mostrar Cookie</button>
+    <script>
+        document.getElementById("getCookie").addEventListener("click", ()=> {
+            fetch("/getCookie")
+            .then(response => response.text())
+            .then(data => {
+                console.log(data)
+            })
+        })
+    </script>
+</body>
+</html>
