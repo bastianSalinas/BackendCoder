@@ -78,6 +78,7 @@ app.get("/products", async (req, res) => {
         products : allProducts,
         email: req.session.emailUsuario,
         rol: req.session.rolUsuario,
+        algo: req.session.algo,
     });
 })
 app.get("/carts/:cid", async (req, res) => {
@@ -103,11 +104,16 @@ app.get("/register", async (req, res) => {
 })
 //Ingreso Profile http://localhost:8080/profile
 app.get("/profile", async (req, res) => { 
+    if (!req.session.emailUsuario) 
+    {
+        return res.redirect("/login")
+    }
     res.render("profile", {
         title: "Vista Profile Admin",
         first_name: req.session.nomUsuario,
         last_name: req.session.apeUsuario,
         email: req.session.emailUsuario,
         rol: req.session.rolUsuario,
+
     });
 })

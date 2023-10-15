@@ -38,7 +38,7 @@ userRouter.post("/login", async (req, res) => {
                 req.session.rolUsuario = data.rol
                 res.redirect("/products")
             }
-            
+        
         }
         else
         {
