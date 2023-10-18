@@ -19,7 +19,7 @@ class UserManager extends usersModel
             console.error('Error al agregar el usuario:', error);
             return 'Error al agregar el usuario';
           }
-        }
+      }
     
       // Actualiza un usuario existente
       async updateUser(id, userData) 

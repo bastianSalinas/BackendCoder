@@ -11,6 +11,8 @@ import userRouter from "./router/user.routes.js"
 import MongoStore from "connect-mongo"
 import session from 'express-session'
 import FileStore from 'session-file-store'
+import passport from "passport"
+import initializePassword from "./config/passport.config.js"
 
 //El funcionamiento se valido con la extensión Thunder Client desde Visual Studio Code
 //Actualmente el proyecto se ejecuta desde el ingreso del  Login http://localhost:8080/login
@@ -48,6 +50,11 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
 }))
+//Passport//
+initializePassword()
+app.use(passport.initialize())
+app.use(passport.session())
+//End Passport//
 //-------------------------------------------------------------------------------------//
 //Se simplifica codigo de middleware colocando lo siguiente
 //IMPORTANTE COLOCAR LAS RUTAS DESPUES DE QUE SE CREE LA SESION PORQUE SI NO, NO FUNCIONA EL REQ.SESSION

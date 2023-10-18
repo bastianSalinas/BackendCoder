@@ -2,61 +2,45 @@ import express from "express"
 import UserManager from "../controllers/UserManager.js"
 import { Router } from "express"
 import { createHash, isValidPassword } from '../utils.js'
+import passport from "passport"
 
 const userRouter = Router()
 const user = new UserManager()
 
 
 
-userRouter.post("/register",(req, res) => {
+userRouter.post("/register", passport.authenticate("register", {failureRedirect:"/failregister"}), async (req, res) => {
     try 
     {
         const { first_name, last_name, email, age, password, rol }= req.body
         if (!first_name || !last_name || !email || !age)  return res.status(400).send({ status: 400, error: 'Faltan datos' })
-        let newUser = {
-            first_name,
-            last_name,
-            email,
-            age: age,
-            password: createHash(password),
-            rol
-        };
-        user.addUser(newUser)
         res.redirect("/login")
     } catch (error) 
     {
         res.status(500).send("Error al acceder al registrar: " + error.message);
     }
 })
+userRouter.get("/failregister",async(req,res)=>{
+    console.log("Failed Strategy")
+    res.send({error: "Failed"})
+})
 
-userRouter.post("/login", async (req, res) => {
+userRouter.post("/login", passport.authenticate("login", {failureRedirect:"/faillogin"}),async (req, res) => {
     try 
     {
-        const { email, password} = req.body;
-        if(!email || !password) return res.status(400).send({status: "error", error: "Valores incompletos"})
-        const usuario = await user.findUser(email)
-        if(!usuario) return res.status(400).send({status:"error", error:"Usuario no encontrado"})
-        if(!isValidPassword(usuario, password)) return res.status(403).send({status: "error", error: "Contraseña incorrecta" })
-              
-        if(usuario && isValidPassword(usuario, password))
-        {   
-            if(usuario.rol === 'admin'){
-                req.session.emailUsuario = email
-                req.session.nomUsuario = usuario.first_name
-                req.session.apeUsuario = usuario.last_name
-                req.session.rolUsuario = usuario.rol
-                res.redirect("/profile")
-            }
-            else{
-                req.session.emailUsuario = email
-                req.session.rolUsuario = usuario.rol
-                res.redirect("/products")
-            }
+        if(!req.user) return res.status(400).send({status:"error", error: "Credenciales invalidas"})
         
+        if(req.user.rol === 'admin'){
+            req.session.emailUsuario = req.user.email
+            req.session.nomUsuario = req.user.first_name
+            req.session.apeUsuario = req.user.last_name
+            req.session.rolUsuario = req.user.rol
+            res.redirect("/profile")
         }
-        else
-        {
-            res.redirect("../../login")
+        else{
+            req.session.emailUsuario = req.user.email
+            req.session.rolUsuario = req.user.rol
+            res.redirect("/products")
         }
 
     } 
@@ -64,6 +48,9 @@ userRouter.post("/login", async (req, res) => {
     {
         res.status(500).send("Error al acceder al perfil: " + error.message);
     }
+})
+userRouter.get("/faillogin",async(req,res)=>{
+    res.send({error: "Failed Login"})
 })
 
 userRouter.get("/logout", async (req, res) => {
