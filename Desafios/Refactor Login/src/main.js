@@ -124,3 +124,10 @@ app.get("/profile", async (req, res) => {
 
     });
 })
+//Solicitado en la anterior revision por tutor
+app.get("/", async (req, res) => { 
+    if (!req.session.emailUsuario) 
+    {
+        return res.redirect("/login")
+    }
+})

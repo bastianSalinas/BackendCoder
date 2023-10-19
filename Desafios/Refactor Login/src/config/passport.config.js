@@ -46,17 +46,13 @@ const initializePassword = () => {
             try
             {
                 const user = await usersModel.findOne({email:username})
-                console.log("start")
                 if(!user)
                 {
                     console.log("Usuario no existe")
                     return done (null, false)
                 }
-                console.log(user+"\n"+password)
                 if(!isValidPassword(user, password)) return done (null, false)
-                console.log("despues")
                 return done(null, user)
-                console.log("final")
             }
             catch(error)
             {
