@@ -1,10 +1,12 @@
 import passport from 'passport'
 import local from 'passport-local'
-import { usersModel } from '../models/users.model.js'
 import { createHash, isValidPassword } from '../utils.js'
+import UserManager from "../controllers/UserManager.js"
+
 
 
 const LocalStrategy = local.Strategy
+const userMan = new UserManager()
 const initializePassword = () => {
     passport.use('register', new LocalStrategy(
         { passReqToCallback: true, usernameField: "email" },
@@ -12,7 +14,7 @@ const initializePassword = () => {
           const { first_name, last_name, email, age, rol } = req.body;
       
           try {
-            let user = await usersModel.findOne({ email: username });
+            let user = await userMan.findEmail({ email: username })
             if (user) {
               console.log("El usuario ya existe");
               return done(null, false);
@@ -29,7 +31,7 @@ const initializePassword = () => {
               rol
             };
       
-            let result = await usersModel.create(newUser);
+            let result = await userMan.addUser(newUser);
             return done(null, result);
           } catch (error) {
             return done("Error al obtener el usuario" + error);
@@ -39,13 +41,13 @@ const initializePassword = () => {
             done(null, user._id)
         })
         passport.deserializeUser(async (id, done) => {
-            let user = await usersModel.findById(id)
+            let user = await userMan.getUserById(id)
             done(null, user)
         })
         passport.use('login', new LocalStrategy({usernameField: "email"}, async(username, password, done) => {
             try
             {
-                const user = await usersModel.findOne({email:username})
+                const user = await userMan.findEmail({email:username})
                 if(!user)
                 {
                     console.log("Usuario no existe")

@@ -13,8 +13,8 @@ class UserManager extends usersModel
       {
           try 
           {
-            await usersModel.create(userData);
-            return 'Usuario agregado';
+            let userCreate = await usersModel.create(userData);
+            return userCreate
           } catch (error) {
             console.error('Error al agregar el usuario:', error);
             return 'Error al agregar el usuario';
@@ -98,6 +98,15 @@ class UserManager extends usersModel
           }
       
           return user;
+        } catch (error) {
+          console.error('Error al validar usuario', error);
+          return 'Error al obtener el usuario';
+        }
+      }
+      async findEmail(param) {
+        try {
+          const user = await UserManager.findOne(param)    
+          return user
         } catch (error) {
           console.error('Error al validar usuario', error);
           return 'Error al obtener el usuario';
