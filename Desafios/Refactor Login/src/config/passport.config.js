@@ -69,7 +69,6 @@ const initializePassword = () => {
         }, async (accessToken, refreshToken, profile, done)=>{
           try
           {
-            console.log(profile)
             let user = await userMan.findEmail({email:profile._json.email})
             if(!user)
             {
