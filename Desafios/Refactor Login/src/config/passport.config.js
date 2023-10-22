@@ -2,6 +2,7 @@ import passport from 'passport'
 import local from 'passport-local'
 import { createHash, isValidPassword } from '../utils.js'
 import UserManager from "../controllers/UserManager.js"
+import GitHubStrategy from "passport-github2"
 
 
 
@@ -61,6 +62,38 @@ const initializePassword = () => {
                 return done(error)
             }
         }))
+        passport.use('github', new GitHubStrategy({
+          clientID: "Iv1.765c1a483a7f1fcc",
+          clientSecret: "6ca9209b51323792574cab20f84433f2b9f95144",
+          callbackURL: "http://localhost:8080/api/sessions/githubcallback"
+        }, async (accessToken, refreshToken, profile, done)=>{
+          try
+          {
+            console.log(profile)
+            let user = await userMan.findEmail({email:profile._json.email})
+            if(!user)
+            {
+              let newUser = {
+                first_name: profile._json.login,
+                last_name:"github",
+                age: 77,
+                email:profile._json.email,
+                password:"",
+                rol:"usuario"
+              }
+              let result = await userMan.addUser(newUser)
+              done(null, result)
+            }
+            else
+            {
+              done(null, user)
+            }
+          }catch(error)
+          {
+            return done(error)
+          }
+        }
+        ))
 }
 
 export default initializePassword

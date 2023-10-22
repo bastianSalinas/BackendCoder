@@ -85,7 +85,6 @@ app.get("/products", async (req, res) => {
         products : allProducts,
         email: req.session.emailUsuario,
         rol: req.session.rolUsuario,
-        algo: req.session.algo,
     });
 })
 app.get("/carts/:cid", async (req, res) => {

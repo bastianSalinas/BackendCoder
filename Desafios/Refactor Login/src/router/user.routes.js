@@ -62,5 +62,13 @@ userRouter.get("/logout", async (req, res) => {
         res.redirect('../../login')
     })    
 })
+userRouter.get("/github", passport.authenticate("github", {scope:["user:email"]}),async (req, res) => {})
+
+userRouter.get("/githubcallback", passport.authenticate("github", {failureRedirect:"/login"}),async (req, res) => {
+    req.session.user = req.user
+    req.session.emailUsuario = req.session.user.email
+    req.session.rolUsuario = req.session.user.rol
+    res.redirect("/products")
+})
 
 export default userRouter
