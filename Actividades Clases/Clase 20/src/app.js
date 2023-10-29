@@ -29,9 +29,7 @@ app.listen(port, () => {
 
 app.post('/register', async (req, res) => {
     const { first_name, last_name, email, age, password } = req.body;
-    if (!first_name || !last_name || !email || !age) {
-        return res.status(202).send({ status: 202, error: 'Faltan datos' });
-    }
+    if (!first_name || !last_name || !email || !age)  return res.status(400).send({ status: 400, error: 'Faltan datos' })
     let user = {
         first_name,
         last_name,
@@ -52,4 +50,5 @@ app.post('/login', async (req, res) => {
      const usuario = await User.findOne({email:email}, {email: 1, first_name:1, last_name:1, password:1})
      if(!usuario) return res.status(400).send({status:"error", error:"User not found"})
      if(!isValidPassword(user, password)) return res.status(403).send({status: "error", error: "Password incorrecto" })
+     
 });
