@@ -1,7 +1,6 @@
-console.log("entra")
+
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault()
-        console.log("entra")
         const email = document.querySelector("#email").value
         const password = document.querySelector("#password").value
 
