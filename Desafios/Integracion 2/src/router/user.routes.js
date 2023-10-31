@@ -12,9 +12,9 @@ const user = new UserManager()
 userRouter.post("/register", passport.authenticate("register", {failureRedirect:"/failregister"}), async (req, res) => {
     try 
     {
-        const { first_name, last_name, email, age, password, rol }= req.body
+        const { first_name, last_name, email, age, password,cart, rol }= req.body
         if (!first_name || !last_name || !email || !age)  return res.status(400).send({ status: 400, error: 'Faltan datos' })
-        res.redirect("/login")
+        res.redirect("/")
     } catch (error) 
     {
         res.status(500).send("Error al acceder al registrar: " + error.message);
@@ -53,22 +53,5 @@ userRouter.get("/faillogin",async(req,res)=>{
     res.send({error: "Failed Login"})
 })
 
-userRouter.get("/logout", async (req, res) => {
-    req.session.destroy((error) =>{
-        if(error)
-        {
-            return res.json({ status: 'Logout Error', body: error})
-        }
-        res.redirect('../../login')
-    })    
-})
-userRouter.get("/github", passport.authenticate("github", {scope:["user:email"]}),async (req, res) => {})
-
-userRouter.get("/githubcallback", passport.authenticate("github", {failureRedirect:"/login"}),async (req, res) => {
-    req.session.user = req.user
-    req.session.emailUsuario = req.session.user.email
-    req.session.rolUsuario = req.session.user.rol
-    res.redirect("/products")
-})
 
 export default userRouter

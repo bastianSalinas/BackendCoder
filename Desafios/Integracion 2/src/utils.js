@@ -1,6 +1,7 @@
 import path from "path"
 import { fileURLToPath } from "url"
 import passport from "passport"
+import bcrypt from 'bcrypt'
 
 export const passportCall = (strategy) => {
     return async(req, res, next)=>{
@@ -21,6 +22,13 @@ export const authorization= (role) => {
         next()
     }
 }
+
+// export const createHash = async password => {
+//     const saltRounds = 10
+//     return await bcrypt.hash(password, saltRounds)
+// }
+
+// export const isValidPassword = (user,password) => bcrypt.compareSync(password, user.password)
 
 
 const __filename = fileURLToPath(import.meta.url)

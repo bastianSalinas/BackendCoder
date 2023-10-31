@@ -1,5 +1,4 @@
 import {promises as fs} from 'fs'
-import {nanoid} from "nanoid"
 import { usersModel } from '../models/users.model.js'
 
 class UserManager extends usersModel
@@ -105,8 +104,17 @@ class UserManager extends usersModel
       }
       async findEmail(param) {
         try {
-          const user = await UserManager.findOne(param)    
+          const user = await UserManager.findOne(param)  
           return user
+        } catch (error) {
+          console.error('Error al validar usuario', error);
+          return 'Error al obtener el usuario';
+        }
+      }
+      async findJWT(filterFunction) {
+        try {
+          const user = await UserManager.find(filterFunction)
+          return user;
         } catch (error) {
           console.error('Error al validar usuario', error);
           return 'Error al obtener el usuario';

@@ -1,6 +1,9 @@
 import passport from "passport"
+import local from 'passport-local'
+import UserManager from "../controllers/UserManager.js"
 import jwt from "passport-jwt"
 
+const LocalStrategy = local.Strategy
 const JwtStrategy = jwt.Strategy
 const ExtractJwt = jwt.ExtractJwt
 const cookieExtractor = req =>{
@@ -24,4 +27,5 @@ const initializePassport = () => {
     }
     ))
 }
+
 export default initializePassport
