@@ -1,5 +1,4 @@
 import {promises as fs} from 'fs'
-import {nanoid} from "nanoid"
 import { productsModel } from '../models/products.model.js'
 
 class ProductManager extends productsModel

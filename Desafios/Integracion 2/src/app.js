@@ -11,8 +11,11 @@ import __dirname, { authorization, passportCall } from "./utils.js"
 import initializePassport from "./config/passport.config.js"
 import MongoStore from "connect-mongo"
 import UserManager from "./controllers/UserManager.js"
+import CartManager from "./controllers/CartManager.js"
+import {generateAndSetToken} from "./jwt/token.js"
 
 const users = new UserManager()
+const carts = new CartManager()
 
 const app = express()
 
@@ -53,19 +56,31 @@ initializePassport();
 app.use(passport.initialize());
 app.use(passport.session())
 
-app.post("/login", async (req,res)=>{
-    const {email, password} = req.body
-    const emailToFind = email
-    const user = await users.findEmail({ email: emailToFind })
-    if(!user || user.password !== password){
-        return res.status(401).json({message: "Error de autenticacion"})
+// app.post("/login", async (req,res)=>{
+//     const {email, password} = req.body
+//     const emailToFind = email
+//     const user = await users.findEmail({ email: emailToFind })
+//     if(!user || user.password !== password){
+//         return res.status(401).json({message: "Error de autenticacion"})
+//     } 
+//     const token = generateAndSetToken(res, email, password) 
+//     res.json({token}) 
+//     console.log(token)
+//     res.redirect("/current")
+// })
+app.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+    const emailToFind = email;
+    const user = await users.findEmail({ email: emailToFind });
+  
+    if (!user || user.password !== password) {
+      return res.status(401).json({ message: "Error de autenticación" });
     }
-    const token = jwt.sign({email,password, role:"user"}, "Secret-key", {expiresIn: "24h"})
-    res.cookie("token", token, {httpOnly: true, maxAge: 60*60*1000})
-    res.json({token})   
-})
+    const token = generateAndSetToken(res, email, password);
+    res.json({ token, user: { email: user.email, rol: user.rol } });
+  });
 app.post("/api/register", async(req,res)=>{
-    const {first_name, last_name, email,age, password, cart, rol} = req.body
+    const {first_name, last_name, email,age, password, rol} = req.body
     const emailToFind = email
     const exists = await users.findEmail({ email: emailToFind })
     if(exists) return res.status(400).send({status:"error", error: "Usuario ya existe"})
@@ -75,13 +90,12 @@ app.post("/api/register", async(req,res)=>{
         email,
         age,
         password,
-        cart,
+        cart: carts.addCart(),
         rol
     };
     users.addUser(newUser)
-    const token = jwt.sign({email,password, role:"user"}, "Secret-key", {expiresIn: "24h"})
-    res.cookie("token", token, {httpOnly: true, maxAge: 60*60*1000})
-    res.send({status: "success", token}) 
+    const token = generateAndSetToken(res, email, password) 
+    res.send({token}) 
 })
 app.get('/', (req, res) => {
     res.sendFile('index.html', { root: app.get('views') });
@@ -89,11 +103,13 @@ app.get('/', (req, res) => {
 app.get('/register', (req, res) => {
     res.sendFile('register.html', { root: app.get('views') });
 });
-app.get('/current', passportCall('jwt'), authorization('user'), (req,res) =>{
-    res.send(req.user)
+app.get('/current',passportCall('jwt'), authorization('user'),(req,res) =>{
+    //res.send(req.user)
     res.sendFile('home.html', { root: app.get('views') });
 })
-
+// app.get("/current", (req,res) => {
+//     res.send({message:"current"})
+// })
 app.listen(8080, () => {
     console.log("Servidor corriendo en puerto 8080")
 })
@@ -105,3 +121,4 @@ mongoose.connect("mongodb+srv://bastsrojas:ptLuitYCTl6wE4jB@cluster0.wx37dwm.mon
 .catch(error => {
     console.error("Error al conectarse a la base de datos, error"+error)
 })
+

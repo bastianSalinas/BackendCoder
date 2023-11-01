@@ -6,7 +6,6 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
     const emailInput= document.getElementById('email');
     const ageInput= document.getElementById('age');
     const passwordInput= document.getElementById('password');
-    const cartInput= document.getElementById('cart');
     const rolInput= document.getElementById('rol');
 
 
@@ -15,13 +14,12 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
     const email = emailInput.value;
     const age = ageInput.value;
     const password = passwordInput.value;
-    const cart = cartInput.value;
     const rol = rolInput.value;
     try 
     {
         const response = await fetch("/api/register",{
             method: "POST",
-            body: JSON.stringify({first_name, last_name, email, age, password, cart, rol}),
+            body: JSON.stringify({first_name, last_name, email, age, password, rol}),
             headers: {
                 "Content-Type": "application/json"
             }
@@ -30,6 +28,11 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         if (response.ok) {
             const responseData = await response.json();
             const successMessage = responseData.message;
+
+            if (responseData.token) {
+                window.location.href = '/';
+            }
+
         } else {
             console.error('Error al enviar el mensaje. Estado:', response.status, 'Texto:', response.statusText);
 

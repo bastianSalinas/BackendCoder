@@ -1,5 +1,4 @@
 import {promises as fs} from 'fs'
-import {nanoid} from "nanoid"
 import { cartsModel } from '../models/carts.model.js'
 import ProductManager from './ProductManager.js'
 
