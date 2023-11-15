@@ -1,19 +1,20 @@
-const customer = []
+import Customer from '../dao/classes/customer.dao.js'
 
-//get customers
-function getAllCustomers(req, res) {
-    res.json(customer)
+const custService = new Customer()
+
+export const getCustomers = async (req, res) => {
+    let result = await custService.getCustomers()
+    res.send({ status: "success", result: result })
 }
 
-//create customer
-function createCustomer(req,res){
-    const newCustomer = req.body
-    customer.push(newCustomer)
-    res.status(201).json(newCustomer)
+export const getCustomerById = async (req, res) => {
+    const { cid } = req.params
+    let customer = await custService.getCustomerById(cid)
+    res.send({ status: "success", result: customer })
 }
 
-const customerControllers = {
-    getAllCustomers,
-    createCustomer
+export const saveCustomer = async (req, res) => {
+    const customer = req.body
+    let result = await custService.saveCustomer(customer)
+    res.send({ status: "success", result: result })
 }
-export default customerControllers;

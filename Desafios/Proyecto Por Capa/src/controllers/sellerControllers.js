@@ -1,20 +1,20 @@
-const seller = []
+import Seller from '../dao/classes/seller.dao.js'
 
-//get customers
-function getAllSellers(req, res) {
-    res.json(seller)
+const sellerService = new Seller()
+
+export const getSellers = async (req, res) => {
+    let result = await sellerService.getSellers()
+    res.send({ status: "success", result: result })
 }
 
-//create customer
-function createSeller(req,res){
-    const newSeller = req.body
-    seller.push(newSeller)
-    res.status(201).json(newSeller)
+export const getSellerById = async (req, res) => {
+    const { sid } = req.params
+    let seller = await sellerService.getSellerById(sid)
+    res.send({ status: "success", result: seller })
 }
 
-const sellerControllers = {
-    getAllSellers,
-    createSeller
+export const saveSeller = async (req, res) => {
+    const seller = req.body
+    let result = await sellerService.saveSeller(seller)
+    res.send({ status: "success", result: result })
 }
-
-export default sellerControllers
