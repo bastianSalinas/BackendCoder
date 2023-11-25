@@ -1,0 +1,25 @@
+<h1>ESTE ES EL HOME USUARIO</h1>
+<button id="logoutButton">Cerrar Sesión</button>
+<div class ="infoProd">
+        <h1>Lista de Productos con Handlebars</h1>
+            <div class="detalleProd">
+             <div id="productsContainer">
+        <ul>
+            {{#each products}}
+                <li>
+                    <strong>{{this.description}}</strong><br>
+                    Price: ${{this.price}}<br>
+                    Stock: {{this.stock}}<br>
+                    Category: {{this.category}}<br>
+                </li>
+            {{/each}}
+        </ul>
+        
+    </div>
+    </div>
+</div>
+<script>  document.getElementById('logoutButton').addEventListener('click', cerrarSesion);
+        function cerrarSesion() {
+            localStorage.removeItem("token");
+            window.location.href = '/';
+        }</script>
