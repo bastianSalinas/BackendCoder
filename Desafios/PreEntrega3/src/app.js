@@ -10,7 +10,7 @@ import UserMongo from "./dao/mongo/users.mongo.js"
 import ProdMongo from "./dao/mongo/products.mongo.js"
 import { Strategy as JwtStrategy } from 'passport-jwt';
 import { ExtractJwt as ExtractJwt } from 'passport-jwt';
-import __dirname, { authorization, passportCall } from "./utils.js"
+import __dirname, { authorization, passportCall, transport } from "./utils.js"
 import initializePassport from "./config/passport.config.js"
 import * as path from "path"
 import {generateAndSetToken} from "./jwt/token.js"
@@ -46,7 +46,6 @@ passport.use(
 )
 
 
-//app.use("/api/sessions", userRouter)
 app.use(express.json())
 app.use(express.static(path.join(__dirname, 'public')));
 app.engine("handlebars", engine())
@@ -55,7 +54,6 @@ app.set("views", path.resolve(__dirname + "/views"))
 app.use(cookieParser());
 initializePassport();
 app.use(passport.initialize());
-//app.use(passport.session())
 
 const httpServer = app.listen(port, () => {
     console.log(`Servidor corriendo en el puerto ${port}`)
@@ -84,6 +82,21 @@ socketServer.on("connection", socket => {
     socket.on("delProd", (id) => {
         products.deleteProduct(id)
         socketServer.emit("success", "Producto Eliminado Correctamente");
+    });
+
+    socket.on("newEmail", async({email, comment}) => {
+        let result = await transport.sendMail({
+            from:'Chat Correo <bast.s.rojas@gmail.com>',
+            to:email,
+            subject:'Correo con Socket y Nodemailer',
+            html:`
+            <div>
+                <h1>${comment}</h1>
+            </div>
+            `,
+            attachments:[]
+        })
+        socketServer.emit("success", "Correo enviado correctamente");
     });
 //-----------------------------Enviar información al cliente----------------------------------//
     socket.emit("test","mensaje desde servidor a cliente, se valida en consola de navegador")

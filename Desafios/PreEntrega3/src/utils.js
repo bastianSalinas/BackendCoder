@@ -1,6 +1,7 @@
 import path from "path"
 import { fileURLToPath } from "url"
 import passport from "passport"
+import nodemailer from 'nodemailer'
 
 export const passportCall = (strategy) => {
     return async(req, res, next)=>{
@@ -21,6 +22,14 @@ export const authorization= (role) => {
         next()
     }
 }
+export const transport= nodemailer.createTransport({
+    service:'gmail',
+    port:587,
+    auth:{
+        user:'bast.s.rojas@gmail.com',
+        pass:'npke sbsg uwco ddca'
+    }
+})
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
