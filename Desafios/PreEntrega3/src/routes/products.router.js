@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { Products } from '../dao/factory.js'
+//import { Products } from '../dao/factory.js'
 import ProductDTO from "../dao/DTOs/product.dto.js";
 import ProductRepository from "../repositories/Products.repository.js";
+import Products from "../dao/mongo/products.mongo.js"
 
 const router = Router()
 

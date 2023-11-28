@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { Users } from '../dao/factory.js'
+//import { Users } from '../dao/factory.js'
 import UserDTO from "../dao/DTOs/user.dto.js";
 import UserRepository from "../repositories/Users.repository.js";
+import Users from "../dao/mongo/users.mongo.js"
 
 const router = Router()
 
