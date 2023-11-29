@@ -9,10 +9,23 @@ export default class CartRepository {
         let result = await this.dao.get()
         return result
     }
+    getAmount = async ({productos}) => {
+        let result = await this.dao.getAmount({productos})
+        return result
+    }
+    validateCart = async (id_cart) => {
+        console.log("entra al validateCart")
+        let result = await this.dao.getCart(id_cart)
+        return result
+    }
+    validateStock = async ({productos}) => {
+        let result = await this.dao.getStock({productos})
+        return result
+    }
 
     createCart = async (cart) => {
         let cartToInsert = new CartDTO(cart)
-        let result = await this.dao.create(cartToInsert)
+        let result = await this.dao.addCart(cartToInsert)
         return result
     }
 }

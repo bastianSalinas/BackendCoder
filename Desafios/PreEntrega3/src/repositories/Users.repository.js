@@ -12,7 +12,7 @@ export default class UserRepository {
 
     createUser = async (user) => {
         let userToInsert = new UserDTO(user)
-        let result = await this.dao.create(userToInsert)
+        let result = await this.dao.addUser(userToInsert)
         return result
     }
 }

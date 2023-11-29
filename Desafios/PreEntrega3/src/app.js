@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser"
 import cartsRouter from './routes/carts.router.js'
 import productsRouter from './routes/products.router.js'
 import usersRouter from './routes/users.router.js'
+import ticketsRouter from './routes/tickets.router.js'
 import UserMongo from "./dao/mongo/users.mongo.js"
 import ProdMongo from "./dao/mongo/products.mongo.js"
 import { Strategy as JwtStrategy } from 'passport-jwt';
@@ -106,6 +107,7 @@ socketServer.on("connection", socket => {
 app.use("/carts", cartsRouter)
 app.use("/products", productsRouter)
 app.use("/users", usersRouter)
+app.use("/tickets", ticketsRouter)
 
 //Prueba Front
 app.post("/login", async (req, res) => {

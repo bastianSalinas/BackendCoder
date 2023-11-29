@@ -15,6 +15,7 @@ export default class Products {
         {
             let prodCreate = await productsModel.create(prodData);
             return prodCreate
+            console.log("Producto creado correctamente")
         }catch(error){
             console.error('Error al crear producto:', error);
             return 'Error al crear producto';

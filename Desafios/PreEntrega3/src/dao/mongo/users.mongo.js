@@ -31,6 +31,7 @@ export default class Users {
         {
             let userCreate = await usersModel.create(userData);
             return userCreate
+            console.log("Usuario creado correctamente")
         }catch(error){
             console.error('Error al crear usuario:', error);
             return 'Error al crear usuario';

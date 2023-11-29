@@ -12,7 +12,7 @@ export default class ProductRepository {
 
     createProduct = async (product) => {
         let prodToInsert = new ProductDTO(product)
-        let result = await this.dao.create(prodToInsert)
+        let result = await this.dao.addProduct(prodToInsert)
         return result
     }
 }
