@@ -13,7 +13,6 @@ import { Strategy as JwtStrategy } from 'passport-jwt';
 import { ExtractJwt as ExtractJwt } from 'passport-jwt';
 import __dirname, { authorization, passportCall, transport } from "./utils.js"
 import initializePassport from "./config/passport.config.js"
-import bcrypt from 'bcrypt'
 import * as path from "path"
 import {generateAndSetToken} from "./jwt/token.js"
 import UserDTO from './dao/DTOs/user.dto.js'
@@ -123,7 +122,7 @@ app.post("/login", async (req, res) => {
     
     // Comparar la contraseña proporcionada con la contraseña almacenada encriptada
     try {
-        const passwordMatch = await bcrypt.compare(password, user.password);
+        const passwordMatch = isValidPassword(user, password);
 
         if (!passwordMatch) {
             return res.status(401).json({ message: "Error de autenticación" });
