@@ -13,7 +13,7 @@ import { Strategy as JwtStrategy } from 'passport-jwt';
 import { ExtractJwt as ExtractJwt } from 'passport-jwt';
 import __dirname, { authorization, passportCall, transport } from "./utils.js"
 import initializePassport from "./config/passport.config.js"
-import encryptPassport from './config/passport.bcrypt.js'
+import bcrypt from 'bcrypt'
 import * as path from "path"
 import {generateAndSetToken} from "./jwt/token.js"
 import UserDTO from './dao/DTOs/user.dto.js'
@@ -55,7 +55,7 @@ app.engine("handlebars", engine())
 app.set("view engine", "handlebars")
 app.set("views", path.resolve(__dirname + "/views"))
 app.use(cookieParser());
-encryptPassport();
+
 initializePassport();
 app.use(passport.initialize());
 
@@ -117,13 +117,28 @@ app.post("/login", async (req, res) => {
     const { email, password } = req.body;
     const emailToFind = email;
     const user = await users.findEmail({ email: emailToFind });
-    if (!user || user.password !== password) {
+    if (!user) {
       return res.status(401).json({ message: "Error de autenticación" });
     }
-    const token = generateAndSetToken(res, email, password);
-    const userDTO = new UserDTO(user);
-    const prodAll = await products.get()
-    res.json({ token, user: userDTO, prodAll});
+    
+    // Comparar la contraseña proporcionada con la contraseña almacenada encriptada
+    try {
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        if (!passwordMatch) {
+            return res.status(401).json({ message: "Error de autenticación" });
+        }
+
+        // Si la contraseña coincide, puedes continuar con la generación de token y otras operaciones
+        const token = generateAndSetToken(res, email, password);  // Aquí se encripta la contraseña antes de usarla
+        const userDTO = new UserDTO(user);
+        const prodAll = await products.get();
+        res.json({ token, user: userDTO, prodAll });
+    } catch (error) {
+        // Manejo de errores relacionados con bcrypt
+        console.error("Error al comparar contraseñas:", error);
+        return res.status(500).json({ message: "Error interno del servidor" });
+    }
   });
 app.post("/api/register", async(req,res)=>{
     const {first_name, last_name, email,age, password, rol} = req.body
