@@ -19,6 +19,8 @@ import UserDTO from './dao/DTOs/user.dto.js'
 import { engine } from "express-handlebars"
 import {Server} from "socket.io"
 import { createHash, isValidPassword } from './utils.js'
+import compression from 'express-compression'
+import { nanoid } from 'nanoid'
 const app = express()
 const port = 8080
 
@@ -54,7 +56,7 @@ app.engine("handlebars", engine())
 app.set("view engine", "handlebars")
 app.set("views", path.resolve(__dirname + "/views"))
 app.use(cookieParser());
-
+app.use(compression());
 initializePassport();
 app.use(passport.initialize());
 
@@ -176,4 +178,27 @@ app.get('/admin',passportCall('jwt'), authorization('user'),(req,res) =>{
         const prodAll = await products.get();
         res.render('admin', { products: prodAll });
     });
+})
+function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+app.get("/mockingproducts", async(req,res)=>{
+
+    const products = [];
+
+    for (let i = 0; i < 50; i++) {
+        const product = {
+            id: nanoid(),
+            description: `Product ${i + 1}`,
+            image: 'https://example.com/image.jpg',
+            price: getRandomNumber(1, 1000),
+            stock: getRandomNumber(1, 100),
+            category: `Category ${i % 5 + 1}`,
+            availability: 'in_stock'
+        };
+
+        products.push(product);
+    }
+
+    res.send(products);
 })
