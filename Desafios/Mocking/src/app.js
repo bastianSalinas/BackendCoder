@@ -179,6 +179,7 @@ app.get('/admin',passportCall('jwt'), authorization('user'),(req,res) =>{
         res.render('admin', { products: prodAll });
     });
 })
+//-----------------------------------Mocking--------------------------------//
 function getRandomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
@@ -202,3 +203,4 @@ app.get("/mockingproducts", async(req,res)=>{
 
     res.send(products);
 })
+//-------------------------------------Mocking-----------------------------//
