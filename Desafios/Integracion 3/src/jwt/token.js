@@ -8,5 +8,11 @@ export function generateAndSetToken(res, email, password) {
 
 export function generateAndSetTokenEmail(email) {
   const token = jwt.sign({ email }, 'secreto', { expiresIn: '1h' });
+  console.log(token)
   return token
+}
+export function validateTokenResetPass(token) {
+  const result = jwt.verify(token, 'secreto');
+  console.log(result)
+  return result
 }

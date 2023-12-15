@@ -14,7 +14,7 @@ import { ExtractJwt as ExtractJwt } from 'passport-jwt';
 import __dirname, { authorization, passportCall, transport,createHash, isValidPassword } from "./utils.js"
 import initializePassport from "./config/passport.config.js"
 import * as path from "path"
-import {generateAndSetToken, generateAndSetTokenEmail} from "./jwt/token.js"
+import {generateAndSetToken, generateAndSetTokenEmail, validateTokenResetPass} from "./jwt/token.js"
 import UserDTO from './dao/DTOs/user.dto.js'
 import { engine } from "express-handlebars"
 import {Server} from "socket.io"
@@ -88,6 +88,9 @@ socketServer.on("connection", socket => {
     socket.on("delProd", (id) => {
         products.deleteProduct(id)
         socketServer.emit("success", "Producto Eliminado Correctamente");
+    });
+    socket.on("equalsPass", () => {
+        socketServer.emit("warning", "No pueden ser las contraseñas iguales, reintente");
     });
 
     socket.on("newEmail", async({email, comment}) => {
@@ -190,6 +193,7 @@ app.get('/register', (req, res) => {
     req.logger.info("Se inicia página de Registro de Usuarios");
     res.sendFile('register.html', { root: app.get('views') });
 });
+
 app.get('/current',passportCall('jwt', { session: false }), authorization('user'),(req,res) =>{
     req.logger.info("Se inicia página de Usuario");
     authorization('user')(req, res,async() => {      
@@ -219,7 +223,7 @@ app.post('/forgot-password', async (req, res) => {
     const token = generateAndSetTokenEmail(email)
   
     // Configurar el enlace de restablecimiento de contraseña
-    const resetLink = `http://localhost:3000/reset-password?token=${token}`;
+    const resetLink = `http://localhost:8080/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
   
     let result = transport.sendMail({
         from:'Chat Correo <bast.s.rojas@gmail.com>',
@@ -240,6 +244,56 @@ app.post('/forgot-password', async (req, res) => {
         res.json("Error al intentar reestablecer contraseña");
     }
   });
+  app.get('/reset-password', async (req, res) => {
+    const { token, email } = req.query;
+    const validate = validateTokenResetPass(token)
+    if(validate){
+        res.render('resetPassword', { token, email });
+    }
+    else{
+        req.logger.error("Error al enviar correo para reestablecer contraseña");
+        console.error("Error al intentar reestablecer contraseña");
+        res.json("Error al intentar reestablecer contraseña");
+    }
+  });
+  app.post("/resetConfirmPass", async (req, res) => {
+    const { password1, password2, email } = req.body;
+        const emailToFind = email;
+        const user = await users.findEmail({ email: emailToFind });
+
+        if (!user) {
+            req.logger.error("Error de autenticación: Usuario no encontrado");
+            return res.status(401).json({ message: "Error de autenticación" });
+        }
+    
+
+    // Comparar la contraseña proporcionada con la contraseña almacenada encriptada
+        try 
+        {
+            const passwordMatch = isValidPassword(user, password);
+            if (passwordMatch) 
+            {
+                req.logger.error("Error no se puede ingresar la contraseña que estaba siendo utilizada");
+                return res.status(401).json({ message: "Error de Contraseña" });
+            }
+            else
+            {
+                // Si la contraseña coincide, puedes continuar con la generación de token y otras operaciones
+                const token = generateAndSetToken(res, email, password);  // Aquí se encripta la contraseña antes de usarla
+                const userDTO = new UserDTO(user);
+                const prodAll = await products.get();
+                res.json({ token, user: userDTO, prodAll });
+
+                // Log de éxito
+                req.logger.info("Inicio de sesión exitoso para el usuario: " + emailToFind);
+            }
+        } catch (error) {
+            // Manejo de errores relacionados con bcrypt
+            req.logger.error("Error al comparar contraseñas: " + error.message);
+            console.error("Error al comparar contraseñas:", error);
+            return res.status(500).json({ message: "Error interno del servidor" });
+        }
+});
 //-----------------------------------Cambiar Contraseña--------------------------------//
 //-----------------------------------Mocking--------------------------------//
 function getRandomNumber(min, max) {

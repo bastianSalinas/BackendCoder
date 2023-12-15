@@ -42,7 +42,6 @@ document.addEventListener("DOMContentLoaded", function () {
         },
       });
       if (responsePass.ok) {
-        console.log(responsePass.ok)
         const result = await responsePass.text();
         lblRecuperacion.textContent = result; 
       } else {
