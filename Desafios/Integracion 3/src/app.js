@@ -14,7 +14,8 @@ import { ExtractJwt as ExtractJwt } from 'passport-jwt';
 import __dirname, { authorization, passportCall, transport,createHash, isValidPassword } from "./utils.js"
 import initializePassport from "./config/passport.config.js"
 import * as path from "path"
-import {generateAndSetToken, generateAndSetTokenEmail, validateTokenResetPass} from "./jwt/token.js"
+import {generateAndSetToken, generateAndSetTokenEmail, 
+    validateTokenResetPass, getEmailFromToken} from "./jwt/token.js"
 import UserDTO from './dao/DTOs/user.dto.js'
 import { engine } from "express-handlebars"
 import {Server} from "socket.io"
@@ -89,8 +90,30 @@ socketServer.on("connection", socket => {
         products.deleteProduct(id)
         socketServer.emit("success", "Producto Eliminado Correctamente");
     });
-    socket.on("equalsPass", () => {
-        socketServer.emit("warning", "No pueden ser las contraseñas iguales, reintente");
+    socket.on("notMatchPass", () => {
+        socketServer.emit("warning", "Las contraseñas son distintas, reintente");
+    });
+    socket.on("validActualPass", async({password1, password2, email}) => {
+        const emailToFind = email;
+        const user = await users.findEmail({ email: emailToFind });
+        const passActual = users.getPasswordByEmail(emailToFind)
+        const validSamePass = isValidPassword(user, password1)
+
+        if(validSamePass){
+            socketServer.emit("samePass","No se puede ingresar la última contraseña valida, reintente");
+        }else{
+            const hashedPassword = await createHash(password1);
+            const updatePassword = await users.updatePassword(email,hashedPassword)
+            if(updatePassword)
+            {
+                socketServer.emit("passChange","La contraseña fue cambiada correctamente");    
+            }
+            else
+            {
+                socketServer.emit("errorPassChange","Error al cambiar la contraseña");   
+            }
+        }
+        
     });
 
     socket.on("newEmail", async({email, comment}) => {
@@ -223,10 +246,10 @@ app.post('/forgot-password', async (req, res) => {
     const token = generateAndSetTokenEmail(email)
   
     // Configurar el enlace de restablecimiento de contraseña
-    const resetLink = `http://localhost:8080/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
+    const resetLink = `http://localhost:8080/reset-password?token=${token}`;
   
     let result = transport.sendMail({
-        from:'Chat Correo <bast.s.rojas@gmail.com>',
+        from:'<bast.s.rojas@gmail.com>',
         to:email,
         subject:'Restablecer contraseña',
         html:`Haz clic en el siguiente enlace para restablecer tu contraseña: <a href="${resetLink}">Restablecer contraseña</a>`,
@@ -245,55 +268,16 @@ app.post('/forgot-password', async (req, res) => {
     }
   });
   app.get('/reset-password', async (req, res) => {
-    const { token, email } = req.query;
+    const { token} = req.query;
     const validate = validateTokenResetPass(token)
+    const emailToken = getEmailFromToken(token)
     if(validate){
-        res.render('resetPassword', { token, email });
+        res.render('resetPassword', { token , email: emailToken});
     }
     else{
-        req.logger.error("Error al enviar correo para reestablecer contraseña");
-        console.error("Error al intentar reestablecer contraseña");
-        res.json("Error al intentar reestablecer contraseña");
+        res.sendFile('index.html', { root: app.get('views') });
     }
   });
-  app.post("/resetConfirmPass", async (req, res) => {
-    const { password1, password2, email } = req.body;
-        const emailToFind = email;
-        const user = await users.findEmail({ email: emailToFind });
-
-        if (!user) {
-            req.logger.error("Error de autenticación: Usuario no encontrado");
-            return res.status(401).json({ message: "Error de autenticación" });
-        }
-    
-
-    // Comparar la contraseña proporcionada con la contraseña almacenada encriptada
-        try 
-        {
-            const passwordMatch = isValidPassword(user, password);
-            if (passwordMatch) 
-            {
-                req.logger.error("Error no se puede ingresar la contraseña que estaba siendo utilizada");
-                return res.status(401).json({ message: "Error de Contraseña" });
-            }
-            else
-            {
-                // Si la contraseña coincide, puedes continuar con la generación de token y otras operaciones
-                const token = generateAndSetToken(res, email, password);  // Aquí se encripta la contraseña antes de usarla
-                const userDTO = new UserDTO(user);
-                const prodAll = await products.get();
-                res.json({ token, user: userDTO, prodAll });
-
-                // Log de éxito
-                req.logger.info("Inicio de sesión exitoso para el usuario: " + emailToFind);
-            }
-        } catch (error) {
-            // Manejo de errores relacionados con bcrypt
-            req.logger.error("Error al comparar contraseñas: " + error.message);
-            console.error("Error al comparar contraseñas:", error);
-            return res.status(500).json({ message: "Error interno del servidor" });
-        }
-});
 //-----------------------------------Cambiar Contraseña--------------------------------//
 //-----------------------------------Mocking--------------------------------//
 function getRandomNumber(min, max) {

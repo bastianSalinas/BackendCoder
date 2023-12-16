@@ -8,11 +8,31 @@ export function generateAndSetToken(res, email, password) {
 
 export function generateAndSetTokenEmail(email) {
   const token = jwt.sign({ email }, 'secreto', { expiresIn: '1h' });
-  console.log(token)
   return token
 }
+export function getEmailFromToken(token) {
+  try {
+    const decoded = jwt.verify(token, 'secreto');
+    const email = decoded.email;
+    return email;
+  } catch (error) {
+    // Manejar errores de decodificación o token no válido
+    console.error('Error al decodificar el token:', error);
+    return null;
+  }
+}
+
 export function validateTokenResetPass(token) {
-  const result = jwt.verify(token, 'secreto');
-  console.log(result)
-  return result
+  try {
+    const result = jwt.verify(token, 'secreto');
+    return result;
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      console.error('El token ha expirado');
+      return null; // or handle expiration in some other way
+    } else {
+      console.error('Error al verificar el token:', error);
+      return null; // or handle other errors in some other way
+    }
+  }
 }
