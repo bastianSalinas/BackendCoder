@@ -8,7 +8,8 @@ const productsSchema = new mongoose.Schema({
     price: { type: Number},
     stock: { type: Number},
     category: { type: String, max: 50 }, // Campo para la categoría
-    availability: { type: String, enum: ['in_stock', 'out_of_stock'] } // Campo para la disponibilidad
+    availability: { type: String, enum: ['in_stock', 'out_of_stock'] }, // Campo para la disponibilidad
+    owner: { type: String, max: 70}
 })
 
 const productsModel = mongoose.model(productsCollection, productsSchema)
