@@ -5,6 +5,15 @@ export function generateAndSetToken(res, email, password) {
   res.cookie("token", token, { httpOnly: true, maxAge: 60 * 60 * 1000 });
   return token
 }
+export function getEmailFromTokenLogin(token) {
+  try {
+    const decoded = jwt.verify(token, 'Secret-key');
+    return decoded.email;
+  } catch (error) {
+    console.error('Error al decodificar el token:', error);
+    return null; // o lanza una excepción según tus necesidades
+  }
+}
 
 export function generateAndSetTokenEmail(email) {
   const token = jwt.sign({ email }, 'secreto', { expiresIn: '1h' });

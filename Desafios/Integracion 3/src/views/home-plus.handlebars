@@ -1,14 +1,16 @@
-<h1>ESTE ES EL HOME ADMIN</h1>
+<h1>ESTE ES EL HOME USUARIO PREMIUM</h1>
 <div class="container">
     <button id="logoutButton">Cerrar Sesión</button>
     <div class="infoProd">
         <h1>Lista de Productos con Handlebars</h1>
+        Bienvenido! <span id="emailUsuario">{{email}}</span>
         <div class="detalleProd">
             <div id="productsContainer">
                 <ul>
                     {{#each products}}
                     <li data-description="{{this.description}}" data-image="{{this.image}}" data-price="{{this.price}}" 
-                    data-stock="{{this.stock}}" data-category="{{this.category}}" data-available="{{this.availability}}" data-id="{{this._id}}">
+                    data-stock="{{this.stock}}" data-category="{{this.category}}" data-available="{{this.availability}}"
+                    data-owner="{{this.owner}}" data-id="{{this._id}}">
                         <strong>{{this.description}}</strong><br>
                         Price: ${{this.price}}<br>
                         Stock: {{this.stock}}<br>
@@ -26,6 +28,7 @@
         <h1>Formulario Crear,Actualizar, Eliminar Productos</h1>
         <form id="prod-form">
             <input type="hidden" id="productId" name="productId">
+            <input type="hidden" id="correoLogin" name="correoLogin" value="{{email}}">
             <div class="inputs">
                 <div>
                     <input type="text" id="desc" autocomplete="off" placeholder="Ingrese Descripcion" required>
@@ -67,6 +70,7 @@
         const priceInput = document.getElementById("price");
         const stockInput = document.getElementById("stock");
         const catInput = document.getElementById("cat");
+        const ownInput = document.getElementById("owner");
         const idInput = document.getElementById("productId");
 
         // Agregar un evento de clic a la lista de productos
@@ -80,6 +84,7 @@
                 const price = clickedElement.getAttribute("data-price");
                 const stock = clickedElement.getAttribute("data-stock");
                 const category = clickedElement.getAttribute("data-category");
+                const owner = clickedElement.getAttribute("data-owner");
                 const productId = clickedElement.getAttribute("data-id");
 
                 // Actualizar los campos del formulario con la información del producto
@@ -88,6 +93,7 @@
                 priceInput.value = price;
                 stockInput.value = stock;
                 catInput.value = category;
+                ownInput.value = owner;
                 idInput.value = productId;
 
             }
@@ -95,4 +101,4 @@
     });
 </script>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/realTimeProducts.js"></script>
+<script src="/realTimeProductsPremium.js"></script>

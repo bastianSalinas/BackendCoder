@@ -53,6 +53,22 @@ export default class Users {
             return 'Error al crear usuario';
         }      
     }
+    getUserRoleByEmail = async (email) => {
+      try {
+        // Buscar el usuario por correo electrónico en tu modelo de usuario
+        const user = await usersModel.findOne({ email });
+    
+        // Verificar si se encontró un usuario y si tiene un rol premium
+        if (user && user.rol === 'premium') {
+          return 'premium'
+        } else {
+          return "usuario con otro rol"
+        }""
+      } catch (error) {
+        console.error('Error al obtener el rol del usuario:', error);
+        return 'Error al obtener el rol del usuario';
+      }
+    };
     updatePassword = async (email, newPassword) => {
       try {
           const updatedUser = await usersModel.findOneAndUpdate(
@@ -94,6 +110,25 @@ export default class Users {
         } catch (error) {
           console.error('Error al obtener el usuario:', error);
           return 'Error al obtener el usuario';
+        }
+      };
+      updateUserRoleById = async ({uid, rol}) => {
+        try {
+          const updatedUser = await usersModel.findByIdAndUpdate(
+            uid,
+            { $set: { rol: rol } },
+            { new: true }
+          );
+      
+          if (updatedUser) {
+            return updatedUser;
+          } else {
+            console.error('Usuario no encontrado');
+            return null; // o lanza una excepción según tus necesidades
+          }
+        } catch (error) {
+          console.error('Error al actualizar el rol:', error);
+          return 'Error al actualizar el rol';
         }
       };
 }

@@ -15,7 +15,7 @@ import __dirname, { authorization, passportCall, transport,createHash, isValidPa
 import initializePassport from "./config/passport.config.js"
 import * as path from "path"
 import {generateAndSetToken, generateAndSetTokenEmail, 
-    validateTokenResetPass, getEmailFromToken} from "./jwt/token.js"
+    validateTokenResetPass, getEmailFromToken, getEmailFromTokenLogin} from "./jwt/token.js"
 import UserDTO from './dao/DTOs/user.dto.js'
 import { engine } from "express-handlebars"
 import {Server} from "socket.io"
@@ -79,8 +79,14 @@ socketServer.on("connection", socket => {
 //-----------------------------------------------//
 
     socket.on("newProd", (newProduct) => {
-        products.addProduct(newProduct)
-        socketServer.emit("success", "Producto Agregado Correctamente");
+        let validUserPremium = users.getUserRoleByEmail(newProduct.owner)
+        if(validUserPremium == 'premium'){
+            products.addProduct(newProduct)
+            socketServer.emit("success", "Producto Agregado Correctamente");
+        }else{
+            socketServer.emit("errorUserPremium", "Producto no fue agregado porque owner no es usuario premium");
+        }
+        
     });
     socket.on("updProd", ({id, newProduct}) => {
         products.updateProduct(id, newProduct)
@@ -89,6 +95,16 @@ socketServer.on("connection", socket => {
     socket.on("delProd", (id) => {
         products.deleteProduct(id)
         socketServer.emit("success", "Producto Eliminado Correctamente");
+    });
+    socket.on("delProdPremium", ({id, owner, email}) => {
+        console.log(owner)
+        console.log(email)
+        if(owner == email){
+            products.deleteProduct(id)
+            socketServer.emit("success", "Producto Eliminado Correctamente");
+        }else{
+            socketServer.emit("errorDelPremium", "Error al eliminar el producto porque no pertenece a usuario Premium");
+        }  
     });
     socket.on("notMatchPass", () => {
         socketServer.emit("warning", "Las contraseñas son distintas, reintente");
@@ -112,8 +128,7 @@ socketServer.on("connection", socket => {
             {
                 socketServer.emit("errorPassChange","Error al cambiar la contraseña");   
             }
-        }
-        
+        }        
     });
 
     socket.on("newEmail", async({email, comment}) => {
@@ -222,6 +237,15 @@ app.get('/current',passportCall('jwt', { session: false }), authorization('user'
     authorization('user')(req, res,async() => {      
         const prodAll = await products.get();
         res.render('home', { products: prodAll });
+    });
+})
+app.get('/current-plus',passportCall('jwt', { session: false }), authorization('user'),(req,res) =>{
+    req.logger.info("Se inicia página de Usuario Plus (Premium)");
+    authorization('user')(req, res,async() => {  
+        const { token} = req.query;
+        const emailToken = getEmailFromTokenLogin(token) 
+        const prodAll = await products.get();
+        res.render('home-plus', { products: prodAll, email: emailToken });
     });
 })
 app.get('/admin',passportCall('jwt'), authorization('user'),(req,res) =>{

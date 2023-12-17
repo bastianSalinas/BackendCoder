@@ -7,6 +7,9 @@ document.getElementById('prod-form').addEventListener('submit', (e) => {
     const id = idInput.value;
     idInput.value = '';
 
+    const emailInput = document.getElementById('correoLogin');
+    const email = emailInput.value;
+
     const descInput = document.getElementById('desc');
     const description = descInput.value;
     descInput.value = '';
@@ -40,7 +43,7 @@ document.getElementById('prod-form').addEventListener('submit', (e) => {
 
     if (eliminarProducto) {
         // Enviar mensaje si el checkbox está seleccionado
-        socket.emit("delProd", { id: id });
+        socket.emit("delProdPremium", { id: id, owner: owner, email: email });
     }else{
         const newProduct = {
             description: description,
@@ -75,7 +78,7 @@ socket.on("success", (data) => {
     });
 });
 
-socket.on("errorUserPremium", (data) => {
+socket.on("errorDelPremium", (data) => {
     Swal.fire({
         icon: 'error',
         title: data,

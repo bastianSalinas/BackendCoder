@@ -1,6 +1,6 @@
 import { Router } from "express";
 import ProductDTO from "../dao/DTOs/product.dto.js";
-import { productService } from "../repositories/index.js";
+import { productService, userService } from "../repositories/index.js";
 import Products from "../dao/mongo/products.mongo.js"
 import CustomError from "../services/errors/CustomError.js";
 import EErrors from "../services/errors/enum.js";
@@ -26,8 +26,12 @@ router.get("/", async (req, res) => {
 //--------------------------------------------------------//
 
 router.post("/", async (req, res) => {
-    let { description, image, price, stock, category, availability } = req.body
-    const product = { description, image, price, stock, category, availability}
+    let { description, image, price, stock, category, availability, owner } = req.body
+    if(owner === undefined || owner == '')
+    {
+        owner = 'admin@admin.cl'
+    }
+    const product = { description, image, price, stock, category, availability, owner}
     if (!description || !price) {
         try {
             // Some code that might throw an error
@@ -43,8 +47,14 @@ router.post("/", async (req, res) => {
             console.error(error);
         }
     }
-    let prod = new ProductDTO({ description, image, price, stock, category, availability })
-    let result = await productService.createProduct(prod)
+    let prod = new ProductDTO({ description, image, price, stock, category, availability, owner })
+    let userPremium = await userService.getRolUser(owner)
+    if(userPremium == 'premium'){
+        let result = await productService.createProduct(prod)
+    }else{
+        req.logger.error("Error al ingresar owner de usuario invalido");
+    }
+    
 })
 
 export default router
