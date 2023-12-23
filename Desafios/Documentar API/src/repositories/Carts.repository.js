@@ -14,7 +14,6 @@ export default class CartRepository {
         return result
     }
     validateCart = async (id_cart) => {
-        console.log("entra al validateCart")
         let result = await this.dao.getCart(id_cart)
         return result
     }

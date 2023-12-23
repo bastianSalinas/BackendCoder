@@ -10,17 +10,29 @@ const router = Router()
 const cartMongo = new Carts()
 
 router.get("/", async (req, res) => {
-    let result = await cartMongo.get()
-    res.send({ status: "success", payload: result })
+    try
+    {
+        let result = await cartMongo.get()
+        res.status(200).send({ status: "success", payload: result });
+    }
+    catch(error)
+    {
+        res.status(500).send({ status: "error", message: "Error interno del servidor" });
+    } 
 })
 
 router.post("/", async (req, res) => {
-    let { products } = req.body
-
-    let cart = new CartDTO({ products })
-    console.log(cart)
-    let result = await cartService.createCart(cart)
-    console.log(result)
+    try
+    {
+        let { products } = req.body
+        let cart = new CartDTO({ products })
+        let result = await cartService.createCart(cart)
+        res.status(200).send({ status: "success", payload: result });
+    }
+    catch(error)
+    {
+        res.status(500).send({ status: "error", message: "Error interno del servidor" });
+    }
 })
 router.post("/:cid/purchase", async (req, res) => {
     try {
@@ -52,10 +64,10 @@ router.post("/:cid/purchase", async (req, res) => {
         //   }
         const productos = req.body.productos;
         const correo = req.body.correo;
-        console.log(correo)
         let cart = cartService.validateCart(id_cart)
         if (!cart) {
-            return { error: "No se encontró el carrito con el ID proporcionado" };
+            //return { error: "No se encontró el carrito con el ID proporcionado" };
+            res.status(401).send({ status: "error", message: "No se encontró el carrito con el ID proporcionado" });
         }
         let validaStock = cartService.validateStock({productos})
 
@@ -63,8 +75,10 @@ router.post("/:cid/purchase", async (req, res) => {
             let totalAmount = await cartService.getAmount({productos})
             const ticketFormat = new TicketDTO({amount:totalAmount, purchaser:correo});
             const result = await ticketService.createTicket(ticketFormat);
+            res.status(200).send({ status: "success", payload: result });
         } else {
-            console.log("No hay suficiente stock para realizar la compra");
+            console.error("No hay suficiente stock para realizar la compra");
+            res.status(300).send({ status: "error", message: "No hay suficiente stock para realizar la compra" });
         }
     } catch (error) {
         console.error("Error al procesar la compra:", error);

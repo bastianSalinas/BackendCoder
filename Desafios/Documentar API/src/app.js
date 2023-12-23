@@ -69,7 +69,10 @@ const swaggerOptions = {
             description:'Documentación realizada con Swagger en Proyecto Backend Coderhouse'
         }
     },
-    apis:[`src/docs/users.yaml`]
+    apis:[`src/docs/users.yaml`,
+          `src/docs/products.yaml`,
+          `src/docs/tickets.yaml`,
+          `src/docs/carts.yaml`]
 }
 const specs = swaggerJSDoc(swaggerOptions)
 app.use("/apidocs", swaggerUIExpress.serve, swaggerUIExpress.setup(specs))
