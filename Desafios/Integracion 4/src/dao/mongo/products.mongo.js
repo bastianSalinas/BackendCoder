@@ -27,7 +27,7 @@ export default class Products {
                 return 'ID de producto no válido';
             }
             let updatedProduct = await productsModel.updateOne({ _id: new mongoose.Types.ObjectId(prodId) }, { $set: prodData });
-
+            return updatedProduct
         } catch (error) {
             console.error('Error al actualizar producto:', error);
             return 'Error al actualizar producto';
@@ -42,13 +42,7 @@ export default class Products {
     
             // Eliminar el producto utilizando el ID
             let deletedProduct = await productsModel.deleteOne({ _id: new mongoose.Types.ObjectId(productId) });
-    
-            if (deletedProduct.deletedCount > 0) {
-                // Si se eliminó al menos un producto, se considera exitoso
-                return 'Producto eliminado exitosamente';
-            } else {
-                return 'No se encontró un producto con el ID proporcionado';
-            }
+            return deletedProduct
         } catch (error) {
             console.error('Error al eliminar producto:', error);
             return 'Error al eliminar producto';

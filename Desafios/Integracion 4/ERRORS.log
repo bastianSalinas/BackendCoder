@@ -22,3 +22,4 @@
 {"level":"error","message":"Rol no válido proporcionado"}
 {"level":"error","message":"Error al ingresar owner de usuario invalido"}
 {"level":"error","message":"Error al ingresar owner de usuario invalido"}
+{"level":"error","message":"El owner debe contener usuarios premium"}
