@@ -5,6 +5,7 @@ import Products from "../dao/mongo/products.mongo.js"
 import CustomError from "../services/errors/CustomError.js";
 import EErrors from "../services/errors/enum.js";
 import { generateProductErrorInfo } from "../services/errors/info.js";
+import {transport} from "../utils.js"
 
 const router = Router()
 
@@ -56,5 +57,30 @@ router.post("/", async (req, res) => {
         res.status(500).send({ status: "error", message: "Error interno del servidor" });
     }
 })
+//Eliminar Prudcto segun last_connection en caso de que el producto pertenezca a un usuario premium, le envíe un correo indicándole que el producto fue eliminado
+router.delete('/:idProd', async (req, res) => {
+    try 
+    {
+        const idProducto = req.params.idProd;
+        let ownerProd = await productMongo.getProductOwnerById(idProducto)
+        let userRol = await userService.getRolUser(ownerProd.owner)
+        if(userRol == 'premium')
+        {
+            await transport.sendMail({
+                from: 'bast.s.rojas@gmail.com',
+                to: ownerProd.owner,
+                subject: 'Se elimina Producto con Owner Premium',
+                html:`Se elimina producto con id ${idProducto} correctamente`,
+            });
+            res.status(200).json({ message: 'Producto eliminado con éxito.' });
+        }else{
+            productMongo.deleteProduct(idProducto)
+            res.status(200).json({ message: 'Producto eliminado con éxito.' });
+        }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error al eliminar usuarios.' });
+    }
+  });
 
 export default router

@@ -356,3 +356,25 @@
 {"level":"info","message":"Se inicia página de Inicio de Login"}
 {"level":"info","message":"Inicio de sesión exitoso para el usuario: bast.s.rojas@gmail.com"}
 {"level":"info","message":"Se inicia página de Administrador"}
+{"level":"info","message":"Se inicia página de Inicio de Login"}
+{"level":"error","message":"Error de autenticación: Usuario no encontrado"}
+{"level":"info","message":"Se inicia página de Registro de Usuarios"}
+{"level":"info","message":"Registro exitoso para el usuario: admin@admin.cl"}
+{"level":"info","message":"Se inicia página de Inicio de Login"}
+{"level":"info","message":"Inicio de sesión exitoso para el usuario: admin@admin.cl"}
+{"level":"info","message":"Se inicia página de Administrador"}
+{"level":"info","message":"Se inicia página de Administrador"}
+{"level":"info","message":"Se inicia página de Administrador Usuario"}
+{"level":"info","message":"Se inicia página de Administrador"}
+{"level":"info","message":"Se inicia página de Inicio de Login"}
+{"level":"info","message":"Se inicia página de Registro de Usuarios"}
+{"level":"info","message":"Se inicia página de Inicio de Login"}
+{"level":"info","message":"Se inicia página de Registro de Usuarios"}
+{"level":"info","message":"Registro exitoso para el usuario: bast.s.rojas@gmail.com"}
+{"level":"info","message":"Se inicia página de Inicio de Login"}
+{"level":"info","message":"Inicio de sesión exitoso para el usuario: admin@admin.cl"}
+{"level":"info","message":"Se inicia página de Administrador"}
+{"level":"info","message":"Se inicia página de Administrador"}
+{"level":"info","message":"Se inicia página de Administrador"}
+{"level":"info","message":"Se inicia página de Administrador"}
+{"level":"info","message":"Se inicia página de Administrador"}

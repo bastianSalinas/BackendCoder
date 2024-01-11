@@ -2,7 +2,7 @@ import { Router } from "express";
 import UserDTO from "../dao/DTOs/user.dto.js";
 import { userService } from "../repositories/index.js";
 import Users from "../dao/mongo/users.mongo.js"
-import __dirname, { authorization, passportCall, transport,createHash, isValidPassword } from "../utils.js"
+import {transport} from "../utils.js"
 
 const router = Router()
 
@@ -67,7 +67,7 @@ router.post("/premium/:uid", async (req, res) => {
 //Eliminar Usuario segun last_connection
 router.delete('/', async (req, res) => {
   try {
-    const cutoffDate = new Date(Date.now() - 2 * 60 * 1000); // Últimos 30 minutos para pruebas
+    const cutoffDate = new Date(Date.now() - 120 * 60 * 1000); // Últimas 2 horas
 
     // Eliminar usuarios inactivos
     const result = await usersMongo.deleteUsersByFilter({ last_connection: { $lt: cutoffDate } });
@@ -76,7 +76,7 @@ router.delete('/', async (req, res) => {
       // Enviar correos electrónicos a los usuarios eliminados
       for (const userEmail of result) {
       await transport.sendMail({
-        from: 'bast.s.rojas@gmail.com', // Reemplaza con tu dirección de correo
+        from: 'bast.s.rojas@gmail.com', 
         to: userEmail,
         subject: 'Eliminación de cuenta por inactividad',
         text: 'Tu cuenta ha sido eliminada debido a la inactividad.'
