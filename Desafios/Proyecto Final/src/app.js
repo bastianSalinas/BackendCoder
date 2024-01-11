@@ -219,6 +219,7 @@ app.post("/login", async (req, res) => {
         const token = generateAndSetToken(res, email, password);  // Aquí se encripta la contraseña antes de usarla
         const userDTO = new UserDTO(user);
         const prodAll = await products.get();
+        users.updateLastConnection(email) //Se actualiza ultima conexión de user cada vez que se inicia sesion
         res.json({ token, user: userDTO, prodAll });
 
         // Log de éxito

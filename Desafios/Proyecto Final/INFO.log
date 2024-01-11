@@ -324,3 +324,35 @@
 {"level":"info","message":"Se inicia página de Administrador"}
 {"level":"info","message":"Se inicia página de Administrador"}
 {"level":"info","message":"Se inicia página de Administrador"}
+{"level":"info","message":"Se inicia página de Inicio de Login"}
+{"level":"error","message":"Error de autenticación: Contraseña incorrecta"}
+{"level":"error","message":"Error de autenticación: Contraseña incorrecta"}
+{"level":"info","message":"Inicio de sesión exitoso para el usuario: admin@admin.cl"}
+{"level":"info","message":"Se inicia página de Inicio de Login"}
+{"level":"info","message":"Inicio de sesión exitoso para el usuario: admin@admin.cl"}
+{"level":"info","message":"Se inicia página de Administrador"}
+{"level":"info","message":"Se cargan usuarios"}
+{"level":"info","message":"Se inicia página de Inicio de Login"}
+{"level":"info","message":"Se inicia página de Registro de Usuarios"}
+{"level":"info","message":"Registro exitoso para el usuario: test@algo.cl"}
+{"level":"info","message":"Se inicia página de Inicio de Login"}
+{"level":"info","message":"Inicio de sesión exitoso para el usuario: test@algo.cl"}
+{"level":"info","message":"Se inicia página de Administrador"}
+{"level":"info","message":"Se inicia página de Inicio de Login"}
+{"level":"info","message":"Se inicia página de Registro de Usuarios"}
+{"level":"info","message":"Se inicia página de Inicio de Login"}
+{"level":"error","message":"Error de autenticación: Contraseña incorrecta"}
+{"level":"info","message":"Inicio de sesión exitoso para el usuario: bast.s.rojas@gmail.com"}
+{"level":"info","message":"Se inicia página de Usuario Plus (Premium)"}
+{"level":"info","message":"Se inicia página de Inicio de Login"}
+{"level":"info","message":"Se inicia página de Registro de Usuarios"}
+{"level":"info","message":"Registro exitoso para el usuario: bast.s.rojas@gmail.com"}
+{"level":"info","message":"Se inicia página de Inicio de Login"}
+{"level":"info","message":"Inicio de sesión exitoso para el usuario: bast.s.rojas@gmail.com"}
+{"level":"info","message":"Se inicia página de Usuario"}
+{"level":"info","message":"Se inicia página de Inicio de Login"}
+{"level":"info","message":"Se inicia página de Registro de Usuarios"}
+{"level":"info","message":"Registro exitoso para el usuario: bast.s.rojas@gmail.com"}
+{"level":"info","message":"Se inicia página de Inicio de Login"}
+{"level":"info","message":"Inicio de sesión exitoso para el usuario: bast.s.rojas@gmail.com"}
+{"level":"info","message":"Se inicia página de Administrador"}

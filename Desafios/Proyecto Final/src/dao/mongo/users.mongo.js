@@ -86,6 +86,25 @@ export default class Users {
           return 'Error al actualizar la contraseña';
       }
   };
+  updateLastConnection = async (email) => {
+    try {
+      const updatedUser = await usersModel.findOneAndUpdate(
+        { email: email },
+        { $set: { last_connection: new Date() } },
+        { new: true }
+      );
+  
+      if (updatedUser) {
+        return updatedUser;
+      } else {
+        console.error('Usuario no encontrado');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error al actualizar la última conexión:', error);
+      throw error;
+    }
+  };
     findJWT = async (filterFunction) => {
         try
         {
@@ -143,5 +162,28 @@ export default class Users {
             console.error('Error al eliminar usuario:', error);
             return 'Error al eliminar usuario';
         }
-    };
+      };
+      deleteUsersByFilter = async (filter) => {
+        try {
+          // Obtener usuarios que coinciden con el filtro
+          const usersToDelete = await usersModel.find(filter);
+
+          // Obtener los correos electrónicos de los usuarios antes de eliminarlos
+          const deletedUserEmails = usersToDelete.map(user => user.email);
+
+          // Eliminar usuarios inactivos
+          const result = await usersModel.deleteMany(filter);
+
+          if (result.deletedCount > 0) {
+            // Si se eliminó al menos un usuario, devolver los correos electrónicos
+            return deletedUserEmails;
+          } else {
+            // No se eliminaron usuarios
+            return [];
+          }
+        } catch (error) {
+          console.error('Error al eliminar usuarios:', error);
+          throw error;
+        }
+      };
 }
