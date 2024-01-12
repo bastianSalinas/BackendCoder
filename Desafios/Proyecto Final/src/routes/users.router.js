@@ -67,11 +67,11 @@ router.post("/premium/:uid", async (req, res) => {
 //Eliminar Usuario segun last_connection
 router.delete('/', async (req, res) => {
   try {
-    const cutoffDate = new Date(Date.now() - 120 * 60 * 1000); // Últimas 2 horas
-
+    // Fecha Actual
+    const currentDate = new Date();
+    const cutoffDate = new Date(currentDate.getTime() - 2 * 24 * 60 * 60 * 1000); // Calculo de 2 dias para validar last_connection
     // Eliminar usuarios inactivos
     const result = await usersMongo.deleteUsersByFilter({ last_connection: { $lt: cutoffDate } });
-    console.log(result)
     if(result.length > 0){
       // Enviar correos electrónicos a los usuarios eliminados
       for (const userEmail of result) {

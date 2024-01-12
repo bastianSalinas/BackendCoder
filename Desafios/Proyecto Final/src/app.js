@@ -374,7 +374,6 @@ app.get("/carts/:cid", async (req, res) => {
 app.get("/tickets/:tid", async (req, res) => {
     let id = req.params.tid
     let allTickets  = await tickets.getTicketById(id)
-    console.log(allTickets)
     res.render("viewTicket", {
         title: "Vista Ticket",
         tickets : allTickets

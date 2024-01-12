@@ -67,7 +67,7 @@ router.post("/", async (req, res) => {
         res.status(500).send({ status: "error", message: "Error interno del servidor" });
     }
 })
-//Eliminar Prudcto segun last_connection en caso de que el producto pertenezca a un usuario premium, le envíe un correo indicándole que el producto fue eliminado
+//Eliminar Producto, en caso de que el producto pertenezca a un usuario premium, le envíe un correo indicándole que el producto fue eliminado
 router.delete('/:idProd', async (req, res) => {
     try 
     {
