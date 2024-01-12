@@ -24,6 +24,16 @@ router.get("/", async (req, res) => {
         res.status(500).send({ status: "error", message: "Error interno del servidor" });
     }
 })
+router.get("/:id", async (req, res) => {
+    try{
+        const prodId = req.params.id;
+        const productDetails = await productMongo.getProductById(prodId);
+        res.render("viewDetails", { product: productDetails });
+    } catch (error) {
+        console.error('Error al obtener el producto:', error);
+        res.status(500).json({ error: 'Error al obtener el producto' });
+    } 
+});
 //Crear producto
 router.post("/", async (req, res) => {
     let { description, image, price, stock, category, availability, owner } = req.body

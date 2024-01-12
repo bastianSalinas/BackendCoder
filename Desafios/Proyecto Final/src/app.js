@@ -9,6 +9,8 @@ import usersRouter from './routes/users.router.js'
 import ticketsRouter from './routes/tickets.router.js'
 import UserMongo from "./dao/mongo/users.mongo.js"
 import ProdMongo from "./dao/mongo/products.mongo.js"
+import CartMongo from "./dao/mongo/carts.mongo.js"
+import TicketMongo from "./dao/mongo/tickets.mongo.js"
 import { Strategy as JwtStrategy } from 'passport-jwt';
 import { ExtractJwt as ExtractJwt } from 'passport-jwt';
 import __dirname, { authorization, passportCall, transport,createHash, isValidPassword } from "./utils.js"
@@ -29,7 +31,8 @@ const port = 8080
 
 const users = new UserMongo()
 const products = new ProdMongo()
-
+const carts = new CartMongo()
+const tickets = new TicketMongo()
 
 mongoose.connect(config.mongo_url, {
     useNewUrlParser: true,
@@ -105,8 +108,8 @@ socketServer.on("connection", socket => {
         users.updateUserRoleById({uid: id, rol: newRol})
         socketServer.emit("success", "Usuario Actualizado Correctamente");
     });
-    socket.on("newProd", (newProduct) => {
-        let validUserPremium = users.getUserRoleByEmail(newProduct.owner)
+    socket.on("newProd", async (newProduct) => {
+        let validUserPremium = await users.getUserRoleByEmail(newProduct.owner)
         if(validUserPremium == 'premium'){
             products.addProduct(newProduct)
             socketServer.emit("success", "Producto Agregado Correctamente");
@@ -357,6 +360,27 @@ app.post('/forgot-password', async (req, res) => {
     }
   });
 //-----------------------------------Cambiar Contraseña--------------------------------//
+//Ver Carritos//
+app.get("/carts/:cid", async (req, res) => {
+    let id = req.params.cid
+    let allCarts  = await carts.getCartWithProducts(id)
+    res.render("viewCart", {
+        title: "Vista Carro",
+        carts : allCarts
+    });
+})
+//Fin Ver Carritos//
+//Ver Tickets//
+app.get("/tickets/:tid", async (req, res) => {
+    let id = req.params.tid
+    let allTickets  = await tickets.getTicketById(id)
+    console.log(allTickets)
+    res.render("viewTicket", {
+        title: "Vista Ticket",
+        tickets : allTickets
+    });
+})
+//Fin Ver Tickets//
 //-----------------------------------Mocking--------------------------------//
 function getRandomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);

@@ -97,4 +97,19 @@ export default class Carts {
         return result
         console.log("Carro creado correctamente")
     }
+    getCartWithProducts = async (cartId) =>
+      {
+        try
+        {
+          const cart = await cartsModel.findById(cartId).populate('products.productId').lean();
+          if (!cart) {
+            return 'Carrito no encontrado';
+          }
+      
+          return cart;
+        } catch (error) {
+          console.error('Error al obtener el carrito con productos:', error);
+          return 'Error al obtener el carrito con productos';
+        }
+      }     
 }
