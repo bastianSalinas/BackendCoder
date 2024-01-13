@@ -27,8 +27,9 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
     try{
         const prodId = req.params.id;
+        const userEmail = req.query.email
         const productDetails = await productMongo.getProductById(prodId);
-        res.render("viewDetails", { product: productDetails });
+        res.render("viewDetails", { product: productDetails, email: userEmail });
     } catch (error) {
         console.error('Error al obtener el producto:', error);
         res.status(500).json({ error: 'Error al obtener el producto' });

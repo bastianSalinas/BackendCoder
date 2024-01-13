@@ -9,7 +9,8 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-
+    <a href="/current">Seguir comprando</a>
+     Carrito de usuario {{user}}
     <div class="product-details">
         <p>Carrito ID: {{carts._id}}</p>
         <h2>Productos en el carrito:</h2>
@@ -20,9 +21,20 @@
                     <p>Descripción: {{this.productId.description}}</p>
                     <p>Precio: ${{this.productId.price}}</p>
                     <p>Cantidad: {{this.quantity}}</p>
+                    <p>Total Item: ${{this.total}}</p>
                 </li>
             {{/each}}
         </ul>
+        <p>Suma Total: ${{calculateSumTotal carts.products}}</p>
+       <p id="totalPriceDisplay"></p> 
+        <form action="/checkout" method="GET">
+            <!-- Puedes agregar campos ocultos para enviar información adicional si es necesario -->
+            <input type="hidden" name="cartId" value="{{carts._id}}">
+            <input type="hidden" name="purchaser" value="{{user}}">
+            <input type="hidden" name="totalPrice" value="{{calculateSumTotal carts.products}}">
+            <!-- Agrega el botón de envío -->
+            <button type="submit">Completar Compra</button>
+        </form>
     </div>
 
     <!-- Agrega cualquier otro contenido que desees mostrar en la página -->

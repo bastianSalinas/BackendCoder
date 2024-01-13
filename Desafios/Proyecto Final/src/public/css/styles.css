@@ -128,3 +128,16 @@ button {
     border-radius: 4px;
     cursor: pointer;
 }
+.quantity-container {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-btn {
+    cursor: pointer;
+    padding: 5px 10px;
+    margin: 0 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #B5B2B2;
+}

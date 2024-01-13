@@ -108,6 +108,11 @@ socketServer.on("connection", socket => {
         users.updateUserRoleById({uid: id, rol: newRol})
         socketServer.emit("success", "Usuario Actualizado Correctamente");
     });
+    socket.on("newProdInCart", async ({idProd, quantity,email}) => {
+        let idCart = await users.getIdCartByEmailUser(email)
+        carts.addToCart(idCart, idProd, quantity)
+        socketServer.emit("success", "Producto Agregado Correctamente");
+    });
     socket.on("newProd", async (newProduct) => {
         let validUserPremium = await users.getUserRoleByEmail(newProduct.owner)
         if(validUserPremium == 'premium'){
@@ -245,12 +250,14 @@ app.post("/api/register", async (req, res) => {
     }
 
     const hashedPassword = await createHash(password);
+    let resultNewCart = await carts.addCart()
     const newUser = {
         first_name,
         last_name,
         email,
         age,
         password: hashedPassword,
+        id_cart: resultNewCart._id.toString(),
         rol
     };
 
@@ -278,9 +285,13 @@ app.get('/register', (req, res) => {
 
 app.get('/current',passportCall('jwt', { session: false }), authorization('user'),(req,res) =>{
     req.logger.info("Se inicia página de Usuario");
-    authorization('user')(req, res,async() => {      
+    authorization('user')(req, res,async() => { 
+        const userData = {
+            email: req.user.email,
+        };
+        const idCartUser = await users.getIdCartByEmailUser(req.user.email)
         const prodAll = await products.get();
-        res.render('home', { products: prodAll });
+        res.render('home', { products: prodAll, user: userData, cartId : idCartUser });
     });
 })
 app.get('/current-plus',passportCall('jwt', { session: false }), authorization('user'),(req,res) =>{
@@ -363,13 +374,40 @@ app.post('/forgot-password', async (req, res) => {
 //Ver Carritos//
 app.get("/carts/:cid", async (req, res) => {
     let id = req.params.cid
+    let emailActive = req.query.email
     let allCarts  = await carts.getCartWithProducts(id)
+    allCarts.products.forEach(producto => {
+        producto.total = producto.quantity * producto.productId.price
+    });
+    const sumTotal = allCarts.products.reduce((total, producto) => {
+        return total + (producto.total || 0);  // Asegurarse de manejar casos donde total no esté definido
+    }, 0);
     res.render("viewCart", {
         title: "Vista Carro",
-        carts : allCarts
+        carts : allCarts,
+        user: emailActive,
+        calculateSumTotal: products => products.reduce((total, producto) => total + (producto.total || 0), 0)
     });
 })
 //Fin Ver Carritos//
+//Ver Checkout//
+app.get("/checkout", async (req, res) => {
+    let cart_Id = req.query.cartId
+    let purchaser = req.query.purchaser
+    let totalAmount = req.query.totalPrice
+     const newTicket = {
+         code: nanoid(),
+         purchase_datetime: Date(),
+         amount:totalAmount,
+         purchaser: purchaser,
+         id_cart_ticket:cart_Id
+    }
+    let result = await tickets.addTicket(newTicket)
+    const newTicketId = result._id.toString();
+    // Redirigir al usuario a la página del ticket recién creado
+    res.redirect(`/tickets/${newTicketId}`);
+})
+//Fin Ver Checkout//
 //Ver Tickets//
 app.get("/tickets/:tid", async (req, res) => {
     let id = req.params.tid
