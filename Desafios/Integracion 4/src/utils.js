@@ -73,7 +73,6 @@ const storage = multer.diskStorage({
   
       // Crea la carpeta de destino si no existe
       const fullPath = path.join(__dirname, uploadPath);
-      console.log(fullPath)
       if (!fs.existsSync(fullPath)) {
         fs.mkdirSync(fullPath, { recursive: true });
       }
