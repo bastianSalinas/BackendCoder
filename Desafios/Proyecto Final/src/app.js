@@ -26,6 +26,7 @@ import { nanoid } from 'nanoid'
 import loggerMiddleware from "./loggerMiddleware.js";
 import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUIExpress from 'swagger-ui-express'
+import bodyParser from 'body-parser'
 const app = express()
 const port = 8080
 
@@ -61,6 +62,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.engine("handlebars", engine())
 app.set("view engine", "handlebars")
 app.set("views", path.resolve(__dirname + "/views"))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(compression());
 initializePassport();
@@ -278,6 +281,12 @@ app.get('/', (req, res) => {
     req.logger.info("Se inicia página de Inicio de Login");
     res.sendFile('index.html', { root: app.get('views') });
 });
+app.get('/logout', (req, res) => {
+    req.logger.info("Se Cierra Sesión");
+    let email = req.query.email
+    users.updateLastConnection(email)
+    res.redirect('/');
+});
 app.get('/register', (req, res) => {
     req.logger.info("Se inicia página de Registro de Usuarios");
     res.sendFile('register.html', { root: app.get('views') });
@@ -395,17 +404,24 @@ app.get("/checkout", async (req, res) => {
     let cart_Id = req.query.cartId
     let purchaser = req.query.purchaser
     let totalAmount = req.query.totalPrice
-     const newTicket = {
-         code: nanoid(),
-         purchase_datetime: Date(),
-         amount:totalAmount,
-         purchaser: purchaser,
-         id_cart_ticket:cart_Id
+    let newCart = await carts.addCart()
+    let newIdCart = newCart._id.toString()
+    let updateUser = await users.updateIdCartUser({email: purchaser, newIdCart})
+    if(updateUser)
+    {
+        const newTicket = {
+            code: nanoid(),
+            purchase_datetime: Date(),
+            amount:totalAmount,
+            purchaser: purchaser,
+            id_cart_ticket:cart_Id
+       }
+       let result = await tickets.addTicket(newTicket)
+       const newTicketId = result._id.toString();
+       // Redirigir al usuario a la página del ticket recién creado
+       res.redirect(`/tickets/${newTicketId}`);
     }
-    let result = await tickets.addTicket(newTicket)
-    const newTicketId = result._id.toString();
-    // Redirigir al usuario a la página del ticket recién creado
-    res.redirect(`/tickets/${newTicketId}`);
+     
 })
 //Fin Ver Checkout//
 //Ver Tickets//

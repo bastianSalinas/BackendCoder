@@ -10,6 +10,13 @@ const userSchema = new mongoose.Schema({
     password: String,
     rol: String,
     id_cart: String,
+    documents:
+    [
+        {
+          name: { type: String},
+          reference: { type: String},
+        }
+    ],
     last_connection: Date
 })
 
