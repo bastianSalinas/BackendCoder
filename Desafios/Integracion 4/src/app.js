@@ -24,6 +24,7 @@ import { nanoid } from 'nanoid'
 import loggerMiddleware from "./loggerMiddleware.js";
 import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUIExpress from 'swagger-ui-express'
+import bodyParser from "body-parser";
 const app = express()
 const port = 8080
 
@@ -59,6 +60,8 @@ app.engine("handlebars", engine())
 app.set("view engine", "handlebars")
 app.set("views", path.resolve(__dirname + "/views"))
 app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(compression());
 initializePassport();
 app.use(passport.initialize());
@@ -199,6 +202,7 @@ app.post("/login", async (req, res) => {
         const token = generateAndSetToken(res, email, password);  // Aquí se encripta la contraseña antes de usarla
         const userDTO = new UserDTO(user);
         const prodAll = await products.get();
+        users.updateLastConnection(email)
         res.json({ token, user: userDTO, prodAll });
 
         // Log de éxito
@@ -247,6 +251,12 @@ app.get('/', (req, res) => {
     req.logger.info("Se inicia página de Inicio de Login");
     res.sendFile('index.html', { root: app.get('views') });
 });
+app.get('/logout', (req, res) => {
+    req.logger.info("Se Cierra Sesión");
+    let email = req.query.email
+    users.updateLastConnection(email)
+    res.redirect('/');
+});
 app.get('/register', (req, res) => {
     req.logger.info("Se inicia página de Registro de Usuarios");
     res.sendFile('register.html', { root: app.get('views') });
@@ -254,9 +264,12 @@ app.get('/register', (req, res) => {
 
 app.get('/current',passportCall('jwt', { session: false }), authorization('user'),(req,res) =>{
     req.logger.info("Se inicia página de Usuario");
-    authorization('user')(req, res,async() => {      
+    authorization('user')(req, res,async() => {  
+        const userData = {
+            email: req.user.email,
+        };    
         const prodAll = await products.get();
-        res.render('home', { products: prodAll });
+        res.render('home', { products: prodAll, user: userData });
     });
 })
 app.get('/current-plus',passportCall('jwt', { session: false }), authorization('user'),(req,res) =>{

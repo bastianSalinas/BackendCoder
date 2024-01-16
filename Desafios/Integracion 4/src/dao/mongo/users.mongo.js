@@ -87,6 +87,25 @@ export default class Users {
           return 'Error al actualizar la contraseña';
       }
   };
+  updateLastConnection = async (email) => {
+    try {
+      const updatedUser = await usersModel.findOneAndUpdate(
+        { email: email },
+        { $set: { last_connection: new Date() } },
+        { new: true }
+      );
+  
+      if (updatedUser) {
+        return updatedUser;
+      } else {
+        console.error('Usuario no encontrado');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error al actualizar la última conexión:', error);
+      throw error;
+    }
+  };
     findJWT = async (filterFunction) => {
         try
         {
@@ -129,6 +148,59 @@ export default class Users {
         } catch (error) {
           console.error('Error al actualizar el rol:', error);
           return 'Error al actualizar el rol';
+        }
+      };
+      updateDocuments = async (userId, newDocuments) => {
+        try {
+          // Encuentra al usuario por su ID
+          const user = await usersModel.findById(userId);
+      
+          if (!user) {
+            console.error('Usuario no encontrado');
+            return null;
+          }
+      
+          // Asegúrate de que user.documents sea un array
+          if (!Array.isArray(user.documents)) {
+            user.documents = [];
+          }
+      
+          // Agrega los nuevos documentos a la matriz existente
+          user.documents.push(...(Array.isArray(newDocuments) ? newDocuments : [newDocuments]));
+      
+          // Guarda el usuario actualizado en la base de datos
+          const updatedUser = await user.save();
+      
+          return updatedUser;
+        } catch (error) {
+          console.error('Error al actualizar los documentos:', error);
+          throw error;
+        }
+      };
+      hasRequiredDocuments = async (userId) => {
+        try {
+          // Encuentra al usuario por su ID
+          const user = await usersModel.findById(userId);
+      
+          if (!user || !Array.isArray(user.documents)) {
+            return false; // Devuelve false si el usuario no se encuentra o no tiene documentos
+          }
+      
+          // Nombres de documentos requeridos
+          const requiredDocumentNames = ['identificacion', 'comprobante_domicilio', 'comprobante_estado_cuenta'];
+      
+          // Verifica la presencia de cada documento requerido
+          for (const requiredDocumentName of requiredDocumentNames) {
+            const hasDocument = user.documents.some(doc => doc.name === requiredDocumentName);
+            if (!hasDocument) {
+              return false; // Devuelve false si falta al menos uno de los documentos requeridos
+            }
+          }
+      
+          return true; // Si todos los documentos requeridos están presentes, devuelve true
+        } catch (error) {
+          console.error('Error al verificar los documentos:', error);
+          throw error;
         }
       };
 }
