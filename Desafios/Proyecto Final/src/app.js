@@ -28,7 +28,7 @@ import swaggerJSDoc from 'swagger-jsdoc'
 import swaggerUIExpress from 'swagger-ui-express'
 import bodyParser from 'body-parser'
 const app = express()
-const port = 8080
+const port = config.port || 8080
 
 const users = new UserMongo()
 const products = new ProdMongo()
